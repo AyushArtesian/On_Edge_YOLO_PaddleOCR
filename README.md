@@ -1,4 +1,4 @@
-# On_Edge_YOLO_PaddleOCR
+# EdgeVision Product Intelligence Platform for Android
 
 ---
 
@@ -12,7 +12,7 @@
 ![Status](https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=for-the-badge)
 
 <p align="center">
-  <b>On-device object detection, OCR, and product-name resolution pipeline for Android</b>
+  <b>Production-oriented on-device computer vision, OCR, and product intelligence pipeline for Android</b>
 </p>
 
 <p align="center">
@@ -662,4 +662,3 @@ Several files in `ppocr-sdk` carry Apache 2.0 headers (Paddle-derived components
    - boxes drawn,
    - OCR text mapped,
    - product match method and score emitted.
-

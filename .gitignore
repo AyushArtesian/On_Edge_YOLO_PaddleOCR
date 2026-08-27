@@ -1,0 +1,16 @@
+.gradle/
+.idea/
+.kotlin/
+build/
+**/build/
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+*.iml
+.DS_Store
+
+crash.txt
+exit_info.txt
+native_crash.txt
+yolo_full_crash.txt

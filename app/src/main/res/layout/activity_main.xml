@@ -8,107 +8,93 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Status -->
+    <!-- Model / processing status -->
     <TextView
         android:id="@+id/statusText"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_marginTop="16dp"
         android:text="Loading AI models..."
         android:textSize="16sp"
-
-        android:layout_marginTop="16dp"
-
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-    <!-- Select image -->
-    <Button
-        android:id="@+id/selectImageButton"
-
+    <!-- Image input buttons -->
+    <LinearLayout
+        android:id="@+id/imageActionContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:text="Select Image"
-        android:enabled="false"
-
         android:layout_marginTop="8dp"
-
+        android:orientation="horizontal"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/statusText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/selectImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Image"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/captureImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="Capture Image"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+    <!-- Selected / captured image with numbered detections -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="335dp"
+        android:layout_height="254dp"
+        android:layout_margin="12dp"
+        android:layout_marginTop="20dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Detected product image"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toBottomOf="@id/imageActionContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-    <!-- Detected image -->
-
-
-    <!-- OCR Results title -->
-    <ImageView
-        android:id="@+id/imageView"
-
-        android:layout_width="335dp"
-        android:layout_height="254dp"
-
-        android:layout_margin="12dp"
-
-        android:layout_marginTop="44dp"
-        android:adjustViewBounds="true"
-
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/selectImageButton" />
-
     <TextView
         android:id="@+id/resultsTitle"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="Detected Items"
         android:textStyle="bold"
         android:textSize="18sp"
-
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-
         app:layout_constraintTop_toBottomOf="@id/imageView"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <!-- Scrollable OCR results -->
+    <!-- Scrollable product results -->
     <ScrollView
         android:id="@+id/resultsScrollView"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
-
         android:layout_margin="12dp"
-
         app:layout_constraintTop_toBottomOf="@id/resultsTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <TextView
             android:id="@+id/resultsText"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:text="Select an image to detect products."
-            android:textSize="15sp"
-
             android:padding="8dp"
-
-            android:lineSpacingExtra="4dp" />
+            android:lineSpacingExtra="4dp"
+            android:text="Select an image or capture a photo to detect products."
+            android:textSize="15sp" />
 
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

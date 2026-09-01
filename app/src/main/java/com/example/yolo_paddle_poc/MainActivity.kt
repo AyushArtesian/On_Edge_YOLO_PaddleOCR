@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Bundle
+import android.net.Uri
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +27,7 @@ import com.paddle.ocr.util.OpenCVUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
@@ -148,6 +151,7 @@ class MainActivity : AppCompatActivity() {
     // =====================================================
 
     private lateinit var selectImageButton: Button
+    private lateinit var captureImageButton: Button
     private lateinit var imageView: ImageView
     private lateinit var statusText: TextView
     private lateinit var resultsText: TextView
@@ -166,192 +170,342 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textEmbeddingMatcher: TextEmbeddingMatcher
 
     // =====================================================
-    // IMAGE PICKER
+    // IMAGE INPUT: GALLERY + CAMERA
     // =====================================================
 
+    private var pendingCameraUri: Uri? = null
+
+    /**
+     * Gallery picker.
+     *
+     * Both gallery images and camera images are sent through the exact same
+     * processImageUri() pipeline so YOLO/OCR/matching behavior stays identical.
+     */
     private val imagePicker =
         registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) { uri ->
 
-            if (uri == null) {
-                return@registerForActivityResult
-            }
-
-            if (!yoloReady) {
-                statusText.text = "YOLO model is still loading"
-                return@registerForActivityResult
-            }
-
-            if (!ocrReady || paddleOCR == null) {
-                statusText.text = "PaddleOCR is still loading"
-                return@registerForActivityResult
-            }
-
-            if (!embeddingReady) {
-                statusText.text = "MiniLM matcher is still loading"
-                return@registerForActivityResult
-            }
-
-            lifecycleScope.launch {
-                try {
-                    selectImageButton.isEnabled = false
-                    statusText.text = "Loading image..."
-                    resultsText.text = "Processing..."
-
-                    // =================================================
-                    // LOAD IMAGE
-                    // =================================================
-
-                    val decodedBitmap =
-                        withContext(Dispatchers.IO) {
-                            contentResolver
-                                .openInputStream(uri)
-                                ?.use { inputStream ->
-                                    BitmapFactory.decodeStream(inputStream)
-                                }
-                        }
-
-                    if (decodedBitmap == null) {
-                        statusText.text = "Unable to load image"
-                        resultsText.text = "Image loading failed."
-                        selectImageButton.isEnabled = true
-                        return@launch
-                    }
-
-                    val rgbaBitmap =
-                        decodedBitmap.copy(
-                            Bitmap.Config.ARGB_8888,
-                            false
-                        )
-
-                    if (rgbaBitmap == null) {
-                        statusText.text = "Unable to convert image"
-                        resultsText.text = "Image conversion failed."
-                        selectImageButton.isEnabled = true
-                        return@launch
-                    }
-
-                    if (decodedBitmap !== rgbaBitmap) {
-                        decodedBitmap.recycle()
-                    }
-
-                    /*
-                     * YOLO and the first OCR pass both use inferenceBitmap,
-                     * so full-image OCR coordinates map directly to YOLO boxes.
-                     * Crop OCR is only a fallback for objects that cannot be
-                     * identified confidently from the full-image OCR pass.
-                     */
-                    val inferenceBitmap =
-                        resizeBitmapForInference(
-                            rgbaBitmap,
-                            MAX_IMAGE_SIZE
-                        )
-
-                    if (inferenceBitmap !== rgbaBitmap) {
-                        rgbaBitmap.recycle()
-                    }
-
-                    Log.i(
-                        TAG,
-                        "Inference bitmap = " +
-                                "${inferenceBitmap.width}x${inferenceBitmap.height}"
-                    )
-
-                    // =================================================
-                    // YOLO - ONE FULL-IMAGE RUN
-                    // =================================================
-
-                    statusText.text = "Detecting objects..."
-
-                    val yoloStart =
-                        System.currentTimeMillis()
-
-                    val detections =
-                        withContext(Dispatchers.Default) {
-                            detectObjects(inferenceBitmap)
-                        }
-
-                    val yoloElapsed =
-                        System.currentTimeMillis() - yoloStart
-
-                    val detectionCount =
-                        detections.size / 5
-
-                    Log.i(
-                        TAG,
-                        "YOLO detected $detectionCount objects " +
-                                "in ${yoloElapsed}ms"
-                    )
-
-                    if (detectionCount == 0) {
-                        imageView.setImageBitmap(inferenceBitmap)
-                        statusText.text = "No objects detected"
-                        resultsText.text = "No objects detected."
-                        selectImageButton.isEnabled = true
-                        return@launch
-                    }
-
-                    // =================================================
-                    // HYBRID OCR
-                    // 1) Full-image OCR + coordinate mapping
-                    // 2) Crop OCR fallback only when full-image OCR does
-                    //    not confidently identify that object
-                    // =================================================
-
-                    statusText.text = "Running hybrid OCR..."
-
-                    val pipelineStart =
-                        System.currentTimeMillis()
-
-                    val detectedItems =
-                        runHybridOcr(
-                            sourceBitmap = inferenceBitmap,
-                            detections = detections
-                        )
-
-                    val pipelineElapsed =
-                        System.currentTimeMillis() - pipelineStart
-
-                    // =================================================
-                    // DRAW YOLO BOXES
-                    // =================================================
-
-                    val resultBitmap =
-                        drawBoundingBoxes(
-                            inferenceBitmap,
-                            detections
-                        )
-
-                    imageView.setImageBitmap(resultBitmap)
-
-                    // =================================================
-                    // DISPLAY / LOG
-                    // =================================================
-
-                    displayResults(detectedItems)
-                    logFinalResults(detectedItems)
-
-                    statusText.text =
-                        "$detectionCount objects • " +
-                                "YOLO ${yoloElapsed}ms • " +
-                                "Hybrid OCR+Match ${pipelineElapsed}ms"
-
-                    selectImageButton.isEnabled = true
-
-                } catch (exception: Exception) {
-                    Log.e(
-                        TAG,
-                        "Processing failed",
-                        exception
-                    )
-
-                    statusText.text = "Processing failed"
-                    resultsText.text = "Something went wrong."
-                    selectImageButton.isEnabled = true
-                }
+            if (uri != null) {
+                processImageUri(uri)
             }
         }
+
+    /**
+     * Opens the device camera and stores a full-resolution image in our
+     * app cache through FileProvider.
+     *
+     * TakePicture() is preferred over the thumbnail camera contract because
+     * OCR benefits heavily from the full-resolution camera image.
+     */
+    private val cameraLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) { success ->
+
+            val uri = pendingCameraUri
+            pendingCameraUri = null
+
+            if (success && uri != null) {
+
+                Log.i(
+                    TAG,
+                    "Camera image captured successfully: $uri"
+                )
+
+                processImageUri(uri)
+
+            } else {
+
+                Log.i(
+                    TAG,
+                    "Camera capture cancelled or failed"
+                )
+            }
+        }
+
+    /**
+     * Creates a temporary full-resolution camera destination.
+     *
+     * The matching FileProvider path is defined in:
+     * res/xml/file_paths.xml
+     */
+    private fun createCameraImageUri(): Uri {
+
+        val cameraDirectory =
+            File(
+                cacheDir,
+                "camera_images"
+            )
+
+        if (!cameraDirectory.exists()) {
+            cameraDirectory.mkdirs()
+        }
+
+        val imageFile =
+            File.createTempFile(
+                "product_${System.currentTimeMillis()}_",
+                ".jpg",
+                cameraDirectory
+            )
+
+        return FileProvider.getUriForFile(
+            this,
+            "${packageName}.fileprovider",
+            imageFile
+        )
+    }
+
+    private fun setActionButtonsEnabled(
+        enabled: Boolean
+    ) {
+        selectImageButton.isEnabled = enabled
+        captureImageButton.isEnabled = enabled
+    }
+
+    /**
+     * Common image-processing pipeline used by BOTH:
+     *
+     * 1. Select Image
+     * 2. Capture Image
+     *
+     * Flow:
+     * image -> YOLO -> hybrid OCR -> MiniLM/fuzzy -> duplicate grouping
+     */
+    private fun processImageUri(
+        uri: Uri
+    ) {
+
+        if (!yoloReady) {
+            statusText.text =
+                "YOLO model is still loading"
+            return
+        }
+
+        if (!ocrReady || paddleOCR == null) {
+            statusText.text =
+                "PaddleOCR is still loading"
+            return
+        }
+
+        if (!embeddingReady) {
+            statusText.text =
+                "MiniLM matcher is still loading"
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+
+                setActionButtonsEnabled(false)
+
+                statusText.text =
+                    "Loading image..."
+
+                resultsText.text =
+                    "Processing..."
+
+                // =================================================
+                // LOAD IMAGE
+                // =================================================
+
+                val decodedBitmap =
+                    withContext(Dispatchers.IO) {
+                        contentResolver
+                            .openInputStream(uri)
+                            ?.use { inputStream ->
+                                BitmapFactory.decodeStream(
+                                    inputStream
+                                )
+                            }
+                    }
+
+                if (decodedBitmap == null) {
+
+                    statusText.text =
+                        "Unable to load image"
+
+                    resultsText.text =
+                        "Image loading failed."
+
+                    setActionButtonsEnabled(true)
+                    return@launch
+                }
+
+                val rgbaBitmap =
+                    decodedBitmap.copy(
+                        Bitmap.Config.ARGB_8888,
+                        false
+                    )
+
+                if (rgbaBitmap == null) {
+
+                    statusText.text =
+                        "Unable to convert image"
+
+                    resultsText.text =
+                        "Image conversion failed."
+
+                    setActionButtonsEnabled(true)
+                    return@launch
+                }
+
+                if (decodedBitmap !== rgbaBitmap) {
+                    decodedBitmap.recycle()
+                }
+
+                /*
+                 * YOLO and the first OCR pass both use inferenceBitmap,
+                 * so full-image OCR coordinates map directly to YOLO boxes.
+                 *
+                 * Large camera photos are reduced to MAX_IMAGE_SIZE before
+                 * inference to keep memory/latency under control.
+                 */
+                val inferenceBitmap =
+                    resizeBitmapForInference(
+                        rgbaBitmap,
+                        MAX_IMAGE_SIZE
+                    )
+
+                if (inferenceBitmap !== rgbaBitmap) {
+                    rgbaBitmap.recycle()
+                }
+
+                Log.i(
+                    TAG,
+                    "Inference bitmap = " +
+                            "${inferenceBitmap.width}x${inferenceBitmap.height}"
+                )
+
+                // =================================================
+                // YOLO - ONE FULL-IMAGE RUN
+                // =================================================
+
+                statusText.text =
+                    "Detecting objects..."
+
+                val yoloStart =
+                    System.currentTimeMillis()
+
+                val detections =
+                    withContext(
+                        Dispatchers.Default
+                    ) {
+                        detectObjects(
+                            inferenceBitmap
+                        )
+                    }
+
+                val yoloElapsed =
+                    System.currentTimeMillis() -
+                            yoloStart
+
+                val detectionCount =
+                    detections.size / 5
+
+                Log.i(
+                    TAG,
+                    "YOLO detected $detectionCount objects " +
+                            "in ${yoloElapsed}ms"
+                )
+
+                if (detectionCount == 0) {
+
+                    imageView.setImageBitmap(
+                        inferenceBitmap
+                    )
+
+                    statusText.text =
+                        "No objects detected"
+
+                    resultsText.text =
+                        "No objects detected."
+
+                    setActionButtonsEnabled(true)
+                    return@launch
+                }
+
+                // =================================================
+                // HYBRID OCR
+                //
+                // Pass 1:
+                // Full-image OCR + coordinate mapping.
+                //
+                // Pass 2:
+                // Padded/upscaled per-object crop OCR only when
+                // full-image OCR cannot confidently identify it.
+                // =================================================
+
+                statusText.text =
+                    "Running hybrid OCR..."
+
+                val pipelineStart =
+                    System.currentTimeMillis()
+
+                val detectedItems =
+                    runHybridOcr(
+                        sourceBitmap =
+                            inferenceBitmap,
+
+                        detections =
+                            detections
+                    )
+
+                val pipelineElapsed =
+                    System.currentTimeMillis() -
+                            pipelineStart
+
+                // =================================================
+                // DRAW NUMBERED YOLO BOXES
+                // =================================================
+
+                val resultBitmap =
+                    drawBoundingBoxes(
+                        inferenceBitmap,
+                        detections
+                    )
+
+                imageView.setImageBitmap(
+                    resultBitmap
+                )
+
+                // =================================================
+                // DISPLAY / LOG
+                // =================================================
+
+                displayResults(
+                    detectedItems
+                )
+
+                logFinalResults(
+                    detectedItems
+                )
+
+                statusText.text =
+                    "$detectionCount objects • " +
+                            "YOLO ${yoloElapsed}ms • " +
+                            "Hybrid OCR+Match ${pipelineElapsed}ms"
+
+                setActionButtonsEnabled(true)
+
+            } catch (exception: Exception) {
+
+                Log.e(
+                    TAG,
+                    "Processing failed",
+                    exception
+                )
+
+                statusText.text =
+                    "Processing failed"
+
+                resultsText.text =
+                    "Something went wrong."
+
+                setActionButtonsEnabled(true)
+            }
+        }
+    }
 
     // =====================================================
     // ON CREATE
@@ -388,6 +542,9 @@ class MainActivity : AppCompatActivity() {
         selectImageButton =
             findViewById(R.id.selectImageButton)
 
+        captureImageButton =
+            findViewById(R.id.captureImageButton)
+
         imageView =
             findViewById(R.id.imageView)
 
@@ -397,7 +554,7 @@ class MainActivity : AppCompatActivity() {
         resultsText =
             findViewById(R.id.resultsText)
 
-        selectImageButton.isEnabled = false
+        setActionButtonsEnabled(false)
         resultsText.text = "Waiting for AI models..."
 
         productMatcher =
@@ -405,6 +562,35 @@ class MainActivity : AppCompatActivity() {
 
         selectImageButton.setOnClickListener {
             imagePicker.launch("image/*")
+        }
+
+        captureImageButton.setOnClickListener {
+            try {
+
+                val uri =
+                    createCameraImageUri()
+
+                pendingCameraUri =
+                    uri
+
+                cameraLauncher.launch(
+                    uri
+                )
+
+            } catch (exception: Exception) {
+
+                Log.e(
+                    TAG,
+                    "Unable to open camera",
+                    exception
+                )
+
+                pendingCameraUri =
+                    null
+
+                statusText.text =
+                    "Unable to open camera"
+            }
         }
 
         loadTextEmbeddingMatcher()
@@ -459,7 +645,7 @@ class MainActivity : AppCompatActivity() {
                 resultsText.text =
                     "Text embedding model initialization failed."
 
-                selectImageButton.isEnabled = false
+                setActionButtonsEnabled(false)
             }
         }
     }
@@ -498,7 +684,7 @@ class MainActivity : AppCompatActivity() {
                     resultsText.text =
                         "YOLO initialization failed."
 
-                    selectImageButton.isEnabled = false
+                    setActionButtonsEnabled(false)
                 }
             }
         }.start()
@@ -525,7 +711,7 @@ class MainActivity : AppCompatActivity() {
                     ocrReady = false
                     statusText.text =
                         "OpenCV failed to initialize"
-                    selectImageButton.isEnabled = false
+                    setActionButtonsEnabled(false)
                     return@launch
                 }
 
@@ -579,7 +765,7 @@ class MainActivity : AppCompatActivity() {
                 statusText.text =
                     "PaddleOCR failed to load"
 
-                selectImageButton.isEnabled = false
+                setActionButtonsEnabled(false)
             }
         }
     }
@@ -598,9 +784,9 @@ class MainActivity : AppCompatActivity() {
                 "YOLO + Hybrid OCR + Hybrid Matcher Ready"
 
             resultsText.text =
-                "Select an image."
+                "Select an image or capture a photo."
 
-            selectImageButton.isEnabled = true
+            setActionButtonsEnabled(true)
 
         } else {
             statusText.text =
@@ -620,7 +806,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-            selectImageButton.isEnabled = false
+            setActionButtonsEnabled(false)
         }
     }
 

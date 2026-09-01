@@ -3,6 +3,7 @@ package com.example.yolo_paddle_poc
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Bundle
@@ -1636,37 +1637,176 @@ YOLO: ${item.yoloConfidence}
         val canvas =
             Canvas(output)
 
-        val paint =
+        // Bounding-box paint.
+        val boxPaint =
             Paint().apply {
-                style =
-                    Paint.Style.STROKE
+                style = Paint.Style.STROKE
+                color = Color.RED
 
                 strokeWidth =
                     maxOf(
                         4f,
-                        source.width /
-                                250f
+                        source.width / 250f
                     )
 
                 isAntiAlias = true
             }
 
+        // Text paint used for #1, #2, #3 ...
+        val textPaint =
+            Paint().apply {
+                style = Paint.Style.FILL
+                color = Color.WHITE
+                isAntiAlias = true
+                isFakeBoldText = true
+
+                textSize =
+                    maxOf(
+                        30f,
+                        source.width / 22f
+                    )
+            }
+
+        // Background for the object-number label.
+        val labelBackgroundPaint =
+            Paint().apply {
+                style = Paint.Style.FILL
+                color = Color.RED
+                isAntiAlias = true
+            }
+
         var index = 0
+        var objectNumber = 1
 
         while (
             index + 4 <
             detections.size
         ) {
 
+            // Use min/max so the rectangle is valid even if coordinates
+            // arrive in the opposite order.
+            val left =
+                min(
+                    detections[index],
+                    detections[index + 2]
+                )
+
+            val top =
+                min(
+                    detections[index + 1],
+                    detections[index + 3]
+                )
+
+            val right =
+                max(
+                    detections[index],
+                    detections[index + 2]
+                )
+
+            val bottom =
+                max(
+                    detections[index + 1],
+                    detections[index + 3]
+                )
+
+            // Draw YOLO bounding box.
             canvas.drawRect(
-                detections[index],
-                detections[index + 1],
-                detections[index + 2],
-                detections[index + 3],
-                paint
+                left,
+                top,
+                right,
+                bottom,
+                boxPaint
+            )
+
+            // Draw the same object number used by parseObjectBoxes() and
+            // displayResults(), so #1 on the image corresponds to Object #1
+            // in the result text.
+            val label =
+                "#$objectNumber"
+
+            val textBounds =
+                android.graphics.Rect()
+
+            textPaint.getTextBounds(
+                label,
+                0,
+                label.length,
+                textBounds
+            )
+
+            val padding =
+                maxOf(
+                    6f,
+                    textPaint.textSize * 0.20f
+                )
+
+            val labelWidth =
+                textPaint.measureText(label) +
+                        padding * 2f
+
+            val labelHeight =
+                textPaint.textSize +
+                        padding * 2f
+
+            // Prefer the label above the object. If there is no room,
+            // place it inside the top edge of the bounding box.
+            val labelLeft =
+                left.coerceIn(
+                    0f,
+                    maxOf(0f, source.width.toFloat() - labelWidth)
+                )
+
+            val labelTop =
+                if (top - labelHeight >= 0f) {
+                    top - labelHeight
+                } else {
+                    top
+                }
+
+            val labelRight =
+                min(
+                    source.width.toFloat(),
+                    labelLeft + labelWidth
+                )
+
+            val labelBottom =
+                min(
+                    source.height.toFloat(),
+                    labelTop + labelHeight
+                )
+
+            canvas.drawRect(
+                labelLeft,
+                labelTop,
+                labelRight,
+                labelBottom,
+                labelBackgroundPaint
+            )
+
+            val textX =
+                labelLeft + padding
+
+            val textY =
+                labelBottom - padding
+
+            canvas.drawText(
+                label,
+                textX,
+                textY,
+                textPaint
+            )
+
+            Log.i(
+                TAG,
+                "Drew Object #$objectNumber box=" +
+                        "[${String.format(Locale.US, "%.1f", left)}, " +
+                        "${String.format(Locale.US, "%.1f", top)}, " +
+                        "${String.format(Locale.US, "%.1f", right)}, " +
+                        "${String.format(Locale.US, "%.1f", bottom)}]"
             )
 
             index += 5
+            objectNumber++
         }
 
         return output

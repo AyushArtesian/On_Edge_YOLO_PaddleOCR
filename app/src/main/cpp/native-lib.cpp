@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <cstdlib>
 #include <mutex>
 #include <vector>
 
@@ -166,6 +167,16 @@ Java_com_example_yolo_1paddle_1poc_MainActivity_loadYoloModel(
 
     LOGI("Starting YOLO model loading...");
 
+    // ---------------------------------------------------------
+    // ARM64 / Android OpenMP safety settings.
+    // ---------------------------------------------------------
+    setenv("KMP_AFFINITY", "disabled", 1);
+    setenv("OMP_PROC_BIND", "false", 1);
+    setenv("OMP_NUM_THREADS", "1", 1);
+    setenv("KMP_BLOCKTIME", "0", 1);
+
+    LOGI("OpenMP safety settings applied");
+
     AAssetManager* mgr =
             AAssetManager_fromJava(
                     env,
@@ -192,7 +203,7 @@ Java_com_example_yolo_1paddle_1poc_MainActivity_loadYoloModel(
     // Thread count is configured here,
     // not on ncnn::Extractor.
     g_yolo.opt.num_threads =
-            2;
+            1;
 
     LOGI(
             "NCNN threads = %d",

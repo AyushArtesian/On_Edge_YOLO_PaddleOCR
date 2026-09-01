@@ -40,14 +40,14 @@ class MainActivity : AppCompatActivity() {
         private const val OCR_MAPPING_TAG = "OCR_OBJECT_MAPPING"
 
         private const val MAX_IMAGE_SIZE = 1280
-        private const val OCR_CONFIDENCE_THRESHOLD = 0.25f
+        private const val OCR_CONFIDENCE_THRESHOLD = 0.20f
 
-        /*
-         * OCR text is assigned to a YOLO object when:
-         *
-         * 1) the OCR-box center lies inside the YOLO box, OR
-         * 2) at least this fraction of the OCR box overlaps the YOLO box.
-         */
+        // Hybrid OCR settings.
+        // Pass 1: run OCR once on the complete image and map OCR boxes to YOLO boxes.
+        // Pass 2: only for objects that are not confidently identified from pass 1,
+        // crop the YOLO object with padding, upscale it, and run OCR again.
+        private const val OCR_CROP_PADDING_PERCENT = 0.12f
+        private const val OCR_CROP_SCALE = 3.0f
         private const val OCR_TO_OBJECT_OVERLAP_THRESHOLD = 0.50f
 
         private const val TOP_K = 5
@@ -237,12 +237,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     /*
-                     * IMPORTANT:
-                     *
-                     * Both YOLO and PaddleOCR run on this exact same
-                     * inferenceBitmap. Therefore their coordinates are
-                     * already in the same coordinate system and no scaling
-                     * is required while mapping OCR boxes to YOLO boxes.
+                     * YOLO and the first OCR pass both use inferenceBitmap,
+                     * so full-image OCR coordinates map directly to YOLO boxes.
+                     * Crop OCR is only a fallback for objects that cannot be
+                     * identified confidently from the full-image OCR pass.
                      */
                     val inferenceBitmap =
                         resizeBitmapForInference(
@@ -295,16 +293,19 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     // =================================================
-                    // PADDLE OCR - ONE FULL-IMAGE RUN
+                    // HYBRID OCR
+                    // 1) Full-image OCR + coordinate mapping
+                    // 2) Crop OCR fallback only when full-image OCR does
+                    //    not confidently identify that object
                     // =================================================
 
-                    statusText.text = "Running full-image OCR..."
+                    statusText.text = "Running hybrid OCR..."
 
                     val pipelineStart =
                         System.currentTimeMillis()
 
                     val detectedItems =
-                        runFullImageOcrAndMap(
+                        runHybridOcr(
                             sourceBitmap = inferenceBitmap,
                             detections = detections
                         )
@@ -334,7 +335,7 @@ class MainActivity : AppCompatActivity() {
                     statusText.text =
                         "$detectionCount objects • " +
                                 "YOLO ${yoloElapsed}ms • " +
-                                "Full OCR+Map+Match ${pipelineElapsed}ms"
+                                "Hybrid OCR+Match ${pipelineElapsed}ms"
 
                     selectImageButton.isEnabled = true
 
@@ -535,10 +536,10 @@ class MainActivity : AppCompatActivity() {
 
                         config =
                             PaddleOCRConfig(
-                                detThresh = 0.3f,
-                                detBoxThresh = 0.6f,
+                                detThresh = 0.2f,
+                                detBoxThresh = 0.4f,
                                 recScoreThresh =
-                                    OCR_CONFIDENCE_THRESHOLD,
+                                    0.20f,
                                 recBatchSize = 1
                             ),
 
@@ -594,7 +595,7 @@ class MainActivity : AppCompatActivity() {
             embeddingReady
         ) {
             statusText.text =
-                "YOLO + Full-image OCR + Hybrid Matcher Ready"
+                "YOLO + Hybrid OCR + Hybrid Matcher Ready"
 
             resultsText.text =
                 "Select an image."
@@ -624,10 +625,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // =====================================================
-    // FULL IMAGE OCR + YOLO/OCR COORDINATE MAPPING
+    // HYBRID OCR
     // =====================================================
 
-    private suspend fun runFullImageOcrAndMap(
+    private suspend fun runHybridOcr(
         sourceBitmap: Bitmap,
         detections: FloatArray
     ): List<DetectedItem> {
@@ -636,20 +637,16 @@ class MainActivity : AppCompatActivity() {
             paddleOCR
                 ?: return emptyList()
 
-        // -------------------------------------------------
-        // 1. Build YOLO object boxes
-        // -------------------------------------------------
-
         val objectBoxes =
             parseObjectBoxes(
                 detections
             )
 
         // -------------------------------------------------
-        // 2. Run PaddleOCR ONCE on the complete image
+        // PASS 1: FULL-IMAGE OCR ONCE
         // -------------------------------------------------
 
-        val ocrStart =
+        val fullOcrStart =
             System.currentTimeMillis()
 
         val fullOcrResult =
@@ -659,20 +656,9 @@ class MainActivity : AppCompatActivity() {
 
         val fullOcrElapsed =
             System.currentTimeMillis() -
-                    ocrStart
+                    fullOcrStart
 
-        Log.i(
-            OCR_TAG,
-            "FULL IMAGE OCR finished: " +
-                    "${fullOcrResult.results.size} raw lines, " +
-                    "${fullOcrElapsed}ms"
-        )
-
-        // -------------------------------------------------
-        // 3. Convert PaddleOCR quadrilateral boxes to RectF
-        // -------------------------------------------------
-
-        val ocrBoxes =
+        val fullImageOcrBoxes =
             fullOcrResult.results
                 .filter {
                     it.confidence >=
@@ -684,22 +670,21 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(
             OCR_TAG,
-            "OCR lines after confidence filter = " +
-                    "${ocrBoxes.size}"
+            "FULL IMAGE OCR finished: " +
+                    "${fullOcrResult.results.size} raw lines, " +
+                    "${fullImageOcrBoxes.size} accepted lines, " +
+                    "${fullOcrElapsed}ms"
         )
 
         // -------------------------------------------------
-        // 4. Map each OCR box to the most likely YOLO object
+        // Map full-image OCR boxes to YOLO objects.
         // -------------------------------------------------
 
-        val mappedText:
+        val mappedFullImageText:
                 MutableMap<Int, MutableList<OcrTextBox>> =
             mutableMapOf()
 
-        for (
-        ocrBox in
-        ocrBoxes
-        ) {
+        for (ocrBox in fullImageOcrBoxes) {
 
             val bestObject =
                 findBestObjectForOcrBox(
@@ -707,12 +692,9 @@ class MainActivity : AppCompatActivity() {
                     objectBoxes = objectBoxes
                 )
 
-            if (
-                bestObject !=
-                null
-            ) {
+            if (bestObject != null) {
 
-                mappedText
+                mappedFullImageText
                     .getOrPut(
                         bestObject.objectIndex
                     ) {
@@ -724,7 +706,7 @@ class MainActivity : AppCompatActivity() {
 
                 Log.i(
                     OCR_MAPPING_TAG,
-                    "OCR '${ocrBox.text}' -> " +
+                    "FULL OCR '${ocrBox.text}' -> " +
                             "Object #${bestObject.objectIndex} " +
                             "OCR box=${rectToString(ocrBox.rect)} " +
                             "Object box=${rectToString(bestObject.rect)}"
@@ -734,33 +716,28 @@ class MainActivity : AppCompatActivity() {
 
                 Log.i(
                     OCR_MAPPING_TAG,
-                    "OCR '${ocrBox.text}' -> UNASSIGNED " +
+                    "FULL OCR '${ocrBox.text}' -> UNASSIGNED " +
                             "box=${rectToString(ocrBox.rect)}"
                 )
             }
         }
 
         // -------------------------------------------------
-        // 5. Build one OCR string per YOLO object
+        // Resolve each object.
+        // Full-image OCR is tried first. If it cannot produce
+        // an accepted product match, crop OCR is used as fallback.
         // -------------------------------------------------
 
         val items =
             mutableListOf<DetectedItem>()
 
-        for (
-        objectBox in
-        objectBoxes
-        ) {
+        for (objectBox in objectBoxes) {
 
-            val assignedLines =
-                mappedText[
+            val mappedLines =
+                mappedFullImageText[
                     objectBox.objectIndex
                 ]
                     .orEmpty()
-                    /*
-                     * Approximate reading order:
-                     * top -> bottom, then left -> right.
-                     */
                     .sortedWith(
                         compareBy<OcrTextBox> {
                             it.rect.top
@@ -769,8 +746,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
 
-            val recognizedText =
-                assignedLines
+            val fullImageText =
+                mappedLines
                     .map {
                         it.text.trim()
                     }
@@ -782,89 +759,460 @@ class MainActivity : AppCompatActivity() {
                     )
                     .trim()
 
-            val rawOcrText =
-                if (
-                    recognizedText.isBlank()
-                ) {
-                    "No mapped text"
-                } else {
-                    recognizedText
-                }
-
-            Log.i(
-                OCR_MAPPING_TAG,
-                """
-Object #${objectBox.objectIndex}
-Mapped OCR lines: ${assignedLines.size}
-Mapped OCR text: $rawOcrText
-                """.trimIndent()
-            )
-
-            val productResolution =
-                if (
-                    recognizedText.isNotBlank()
-                ) {
+            val fullImageResolution =
+                if (fullImageText.isNotBlank()) {
                     withContext(
                         Dispatchers.Default
                     ) {
                         resolveProductHybrid(
-                            recognizedText
+                            fullImageText
                         )
                     }
                 } else {
                     ProductResolution(
                         productName = null,
                         score = 0.0,
-                        method = "NO_MAPPED_TEXT"
+                        method = "NO_FULL_IMAGE_TEXT"
                     )
                 }
 
-            items.add(
-                DetectedItem(
-                    objectIndex =
-                        objectBox.objectIndex,
+            // If full-image OCR already gives an accepted product,
+            // do not crop. This preserves large/global text and saves time.
+            if (fullImageResolution.productName != null) {
 
-                    left =
-                        objectBox.rect.left,
-
-                    top =
-                        objectBox.rect.top,
-
-                    right =
-                        objectBox.rect.right,
-
-                    bottom =
-                        objectBox.rect.bottom,
-
-                    yoloConfidence =
-                        objectBox.yoloConfidence,
-
-                    rawOcrText =
-                        rawOcrText,
-
-                    ocrLineCount =
-                        assignedLines.size,
-
-                    /*
-                     * This is the shared full-image OCR pass time.
-                     * It is intentionally the same for every object.
-                     */
-                    ocrTimeMs =
-                        fullOcrElapsed,
-
-                    matchedProductName =
-                        productResolution.productName,
-
-                    productMatchScore =
-                        productResolution.score * 100.0,
-
-                    matchMethod =
-                        productResolution.method
+                Log.i(
+                    OCR_MAPPING_TAG,
+                    """
+Object #${objectBox.objectIndex}
+OCR source: FULL_IMAGE
+Mapped OCR lines: ${mappedLines.size}
+OCR text: $fullImageText
+Matched: ${fullImageResolution.productName}
+Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
+                    """.trimIndent()
                 )
-            )
+
+                items.add(
+                    DetectedItem(
+                        objectIndex =
+                            objectBox.objectIndex,
+
+                        left =
+                            objectBox.rect.left,
+
+                        top =
+                            objectBox.rect.top,
+
+                        right =
+                            objectBox.rect.right,
+
+                        bottom =
+                            objectBox.rect.bottom,
+
+                        yoloConfidence =
+                            objectBox.yoloConfidence,
+
+                        rawOcrText =
+                            fullImageText,
+
+                        ocrLineCount =
+                            mappedLines.size,
+
+                        ocrTimeMs =
+                            fullOcrElapsed,
+
+                        matchedProductName =
+                            fullImageResolution.productName,
+
+                        productMatchScore =
+                            fullImageResolution.score * 100.0,
+
+                        matchMethod =
+                            "FULL_IMAGE_${fullImageResolution.method}"
+                    )
+                )
+
+                continue
+            }
+
+            // -------------------------------------------------
+            // PASS 2: CROP OCR FALLBACK
+            // -------------------------------------------------
+
+            val cropStart =
+                System.currentTimeMillis()
+
+            var cropBitmap: Bitmap? = null
+            var enlargedCrop: Bitmap? = null
+
+            try {
+
+                val objectCrop =
+                    cropBitmapWithPadding(
+                        source = sourceBitmap,
+                        rect = objectBox.rect,
+                        paddingPercent =
+                            OCR_CROP_PADDING_PERCENT
+                    )
+
+                cropBitmap =
+                    objectCrop
+
+                val ocrInput =
+                    upscaleBitmapForOcr(
+                        bitmap = objectCrop,
+                        scaleFactor = OCR_CROP_SCALE
+                    )
+
+                enlargedCrop =
+                    ocrInput
+
+                Log.i(
+                    OCR_TAG,
+                    "Object #${objectBox.objectIndex}: " +
+                            "full-image match failed -> crop fallback; " +
+                            "box=${rectToString(objectBox.rect)}, " +
+                            "crop=${objectCrop.width}x${objectCrop.height}, " +
+                            "OCR input=${ocrInput.width}x${ocrInput.height}"
+                )
+
+                val cropOcrResult =
+                    ocr.recognize(
+                        ocrInput
+                    )
+
+                val cropAcceptedLines =
+                    cropOcrResult.results
+                        .filter {
+                            it.confidence >=
+                                    OCR_CONFIDENCE_THRESHOLD
+                        }
+                        .map {
+                            it.text.trim()
+                        }
+                        .filter {
+                            it.isNotBlank()
+                        }
+
+                val cropText =
+                    cropAcceptedLines
+                        .joinToString(
+                            separator = " "
+                        )
+                        .trim()
+
+                val cropResolution =
+                    if (cropText.isNotBlank()) {
+                        withContext(
+                            Dispatchers.Default
+                        ) {
+                            resolveProductHybrid(
+                                cropText
+                            )
+                        }
+                    } else {
+                        ProductResolution(
+                            productName = null,
+                            score = 0.0,
+                            method = "NO_CROP_TEXT"
+                        )
+                    }
+
+                val cropElapsed =
+                    System.currentTimeMillis() -
+                            cropStart
+
+                // Prefer a successful crop match. If crop matching also fails,
+                // retain whichever OCR text had the stronger matcher score for
+                // diagnostics, while still marking the product as Unknown.
+                val cropAccepted =
+                    cropResolution.productName != null
+
+                val useCropDiagnostics =
+                    cropAccepted ||
+                            cropResolution.score >=
+                            fullImageResolution.score
+
+                val selectedText =
+                    if (useCropDiagnostics) {
+                        if (cropText.isBlank()) {
+                            "No OCR text"
+                        } else {
+                            cropText
+                        }
+                    } else {
+                        if (fullImageText.isBlank()) {
+                            "No OCR text"
+                        } else {
+                            fullImageText
+                        }
+                    }
+
+                val selectedLineCount =
+                    if (useCropDiagnostics) {
+                        cropAcceptedLines.size
+                    } else {
+                        mappedLines.size
+                    }
+
+                val selectedResolution =
+                    if (cropAccepted) {
+                        cropResolution
+                    } else if (
+                        fullImageResolution.score >
+                        cropResolution.score
+                    ) {
+                        fullImageResolution
+                    } else {
+                        cropResolution
+                    }
+
+                val selectedMethod =
+                    if (cropAccepted) {
+                        "CROP_FALLBACK_${cropResolution.method}"
+                    } else {
+                        "HYBRID_UNKNOWN"
+                    }
+
+                Log.i(
+                    OCR_MAPPING_TAG,
+                    """
+Object #${objectBox.objectIndex}
+OCR source: CROP_FALLBACK
+Full-image text: ${if (fullImageText.isBlank()) "<none>" else fullImageText}
+Crop OCR raw lines: ${cropOcrResult.results.size}
+Crop accepted lines: ${cropAcceptedLines.size}
+Crop OCR text: ${if (cropText.isBlank()) "<none>" else cropText}
+Final matched: ${selectedResolution.productName ?: "Unknown"}
+Final score: ${String.format(Locale.US, "%.4f", selectedResolution.score)}
+Crop OCR time: ${cropElapsed}ms
+                    """.trimIndent()
+                )
+
+                items.add(
+                    DetectedItem(
+                        objectIndex =
+                            objectBox.objectIndex,
+
+                        left =
+                            objectBox.rect.left,
+
+                        top =
+                            objectBox.rect.top,
+
+                        right =
+                            objectBox.rect.right,
+
+                        bottom =
+                            objectBox.rect.bottom,
+
+                        yoloConfidence =
+                            objectBox.yoloConfidence,
+
+                        rawOcrText =
+                            selectedText,
+
+                        ocrLineCount =
+                            selectedLineCount,
+
+                        // Full-image OCR is shared by every object. For fallback
+                        // objects, report full pass + this object's crop pass.
+                        ocrTimeMs =
+                            fullOcrElapsed + cropElapsed,
+
+                        matchedProductName =
+                            selectedResolution.productName,
+
+                        productMatchScore =
+                            selectedResolution.score * 100.0,
+
+                        matchMethod =
+                            selectedMethod
+                    )
+                )
+
+            } catch (exception: Exception) {
+
+                Log.e(
+                    OCR_TAG,
+                    "Crop OCR fallback failed for Object #${objectBox.objectIndex}",
+                    exception
+                )
+
+                val fallbackText =
+                    if (fullImageText.isBlank()) {
+                        "OCR failed"
+                    } else {
+                        fullImageText
+                    }
+
+                items.add(
+                    DetectedItem(
+                        objectIndex =
+                            objectBox.objectIndex,
+
+                        left =
+                            objectBox.rect.left,
+
+                        top =
+                            objectBox.rect.top,
+
+                        right =
+                            objectBox.rect.right,
+
+                        bottom =
+                            objectBox.rect.bottom,
+
+                        yoloConfidence =
+                            objectBox.yoloConfidence,
+
+                        rawOcrText =
+                            fallbackText,
+
+                        ocrLineCount =
+                            mappedLines.size,
+
+                        ocrTimeMs =
+                            fullOcrElapsed,
+
+                        matchedProductName =
+                            null,
+
+                        productMatchScore =
+                            fullImageResolution.score * 100.0,
+
+                        matchMethod =
+                            "CROP_FALLBACK_FAILED"
+                    )
+                )
+
+            } finally {
+
+                if (
+                    enlargedCrop != null &&
+                    enlargedCrop !== cropBitmap &&
+                    !enlargedCrop.isRecycled
+                ) {
+                    enlargedCrop.recycle()
+                }
+
+                if (
+                    cropBitmap != null &&
+                    !cropBitmap.isRecycled
+                ) {
+                    cropBitmap.recycle()
+                }
+            }
         }
 
+        Log.i(
+            OCR_TAG,
+            "Hybrid OCR finished for ${items.size} objects"
+        )
+
         return items
+    }
+
+    // =====================================================
+    // OCR CROP HELPERS
+    // =====================================================
+
+    private fun cropBitmapWithPadding(
+        source: Bitmap,
+        rect: RectF,
+        paddingPercent: Float
+    ): Bitmap {
+
+        val boxWidth =
+            max(
+                1f,
+                rect.width()
+            )
+
+        val boxHeight =
+            max(
+                1f,
+                rect.height()
+            )
+
+        val paddingX =
+            boxWidth *
+                    paddingPercent
+
+        val paddingY =
+            boxHeight *
+                    paddingPercent
+
+        val left =
+            (rect.left - paddingX)
+                .toInt()
+                .coerceIn(
+                    0,
+                    source.width - 1
+                )
+
+        val top =
+            (rect.top - paddingY)
+                .toInt()
+                .coerceIn(
+                    0,
+                    source.height - 1
+                )
+
+        val right =
+            (rect.right + paddingX)
+                .toInt()
+                .coerceIn(
+                    left + 1,
+                    source.width
+                )
+
+        val bottom =
+            (rect.bottom + paddingY)
+                .toInt()
+                .coerceIn(
+                    top + 1,
+                    source.height
+                )
+
+        return Bitmap.createBitmap(
+            source,
+            left,
+            top,
+            right - left,
+            bottom - top
+        )
+    }
+
+    private fun upscaleBitmapForOcr(
+        bitmap: Bitmap,
+        scaleFactor: Float
+    ): Bitmap {
+
+        if (scaleFactor <= 1f) {
+            return bitmap
+        }
+
+        val newWidth =
+            max(
+                1,
+                (bitmap.width * scaleFactor)
+                    .toInt()
+            )
+
+        val newHeight =
+            max(
+                1,
+                (bitmap.height * scaleFactor)
+                    .toInt()
+            )
+
+        return Bitmap.createScaledBitmap(
+            bitmap,
+            newWidth,
+            newHeight,
+            true
+        )
     }
 
     // =====================================================
@@ -1468,63 +1816,151 @@ Mapped OCR text: $rawOcrText
         val builder =
             StringBuilder()
 
-        builder.append(
-            "Detected Objects: " +
-                    "${detectedItems.size}\n\n"
-        )
+        // =================================================
+        // GROUP SAME PRODUCTS TOGETHER
+        //
+        // Example:
+        // #1 -> Maggi
+        // #2 -> Maggi
+        // #3 -> Maggi
+        // #4 -> Parle-G
+        //
+        // Display becomes:
+        // Maggi   -> Quantity 3 -> Objects #1, #2, #3
+        // Parle-G -> Quantity 1 -> Object  #4
+        // =================================================
 
-        detectedItems.forEach { item ->
+        val groupedProducts =
+            detectedItems
+                .filter {
+                    !it.matchedProductName.isNullOrBlank()
+                }
+                .groupBy {
+                    canonicalKey(
+                        it.matchedProductName!!
+                    )
+                }
 
-            builder.append(
-                "Object #${item.objectIndex}\n"
-            )
-
-            builder.append(
-                "Product: " +
-                        "${item.matchedProductName ?: "Unknown"}\n"
-            )
-
-            if (
-                item.matchedProductName !=
-                null
-            ) {
-                builder.append(
-                    "Match: " +
-                            String.format(
-                                Locale.US,
-                                "%.1f",
-                                item.productMatchScore
-                            ) +
-                            "%\n"
-                )
+        val unknownItems =
+            detectedItems.filter {
+                it.matchedProductName.isNullOrBlank()
             }
 
+        builder.append(
+            "Detected Objects: ${detectedItems.size}\n"
+        )
+
+        builder.append(
+            "Unique Products: ${groupedProducts.size}\n\n"
+        )
+
+        // =================================================
+        // DISPLAY UNIQUE PRODUCTS
+        // =================================================
+
+        groupedProducts.values.forEachIndexed {
+                index,
+                items ->
+
+            // If the same product is detected multiple times, use the
+            // highest-confidence product match as the representative row.
+            val bestItem =
+                items.maxByOrNull {
+                    it.productMatchScore
+                } ?: return@forEachIndexed
+
+            val productName =
+                bestItem.matchedProductName
+                    ?: "Unknown"
+
+            val objectNumbers =
+                items
+                    .sortedBy {
+                        it.objectIndex
+                    }
+                    .joinToString(", ") {
+                        "#${it.objectIndex}"
+                    }
+
+            val bestYoloConfidence =
+                items.maxOfOrNull {
+                    it.yoloConfidence
+                } ?: 0f
+
+            val totalMappedLines =
+                items.sumOf {
+                    it.ocrLineCount
+                }
+
             builder.append(
-                "Method: ${item.matchMethod}\n"
+                "${index + 1}. $productName\n"
             )
 
             builder.append(
-                "Mapped OCR (${item.ocrLineCount} lines): " +
-                        "${item.rawOcrText}\n"
+                "Quantity: ${items.size}\n"
             )
 
             builder.append(
-                "YOLO: " +
+                "Objects: $objectNumbers\n"
+            )
+
+            builder.append(
+                "Best Match: " +
+                        String.format(
+                            Locale.US,
+                            "%.1f",
+                            bestItem.productMatchScore
+                        ) +
+                        "%\n"
+            )
+
+            builder.append(
+                "Method: ${bestItem.matchMethod}\n"
+            )
+
+            builder.append(
+                "Best YOLO: " +
                         String.format(
                             Locale.US,
                             "%.2f",
-                            item.yoloConfidence
+                            bestYoloConfidence
                         ) +
                         "\n"
             )
 
             builder.append(
-                "Full-image OCR time: " +
-                        "${item.ocrTimeMs} ms\n"
+                "Mapped OCR lines: $totalMappedLines\n"
             )
 
             builder.append(
                 "────────────────────\n\n"
+            )
+        }
+
+        // =================================================
+        // UNKNOWN OBJECTS
+        //
+        // Keep them separate from unique-product count because they do
+        // not have a reliable product identity yet.
+        // =================================================
+
+        if (unknownItems.isNotEmpty()) {
+
+            val unknownObjectNumbers =
+                unknownItems
+                    .sortedBy {
+                        it.objectIndex
+                    }
+                    .joinToString(", ") {
+                        "#${it.objectIndex}"
+                    }
+
+            builder.append(
+                "Unknown Objects: ${unknownItems.size}\n"
+            )
+
+            builder.append(
+                "Objects: $unknownObjectNumbers\n\n"
             )
         }
 
@@ -1543,25 +1979,87 @@ Mapped OCR text: $rawOcrText
 
         Log.i(
             HYBRID_TAG,
-            "FINAL PRODUCT RESULTS"
+            "FINAL UNIQUE PRODUCT RESULTS"
         )
 
-        detectedItems.forEach { item ->
+        val groupedProducts =
+            detectedItems
+                .filter {
+                    !it.matchedProductName.isNullOrBlank()
+                }
+                .groupBy {
+                    canonicalKey(
+                        it.matchedProductName!!
+                    )
+                }
+
+        groupedProducts.values.forEach {
+                items ->
+
+            val bestItem =
+                items.maxByOrNull {
+                    it.productMatchScore
+                } ?: return@forEach
+
+            val objectNumbers =
+                items
+                    .sortedBy {
+                        it.objectIndex
+                    }
+                    .joinToString(", ") {
+                        "#${it.objectIndex}"
+                    }
 
             Log.i(
                 HYBRID_TAG,
                 """
-Object #${item.objectIndex}
-Mapped OCR: ${item.rawOcrText}
-Mapped lines: ${item.ocrLineCount}
-Matched: ${item.matchedProductName ?: "Unknown"}
-Score: ${String.format(Locale.US, "%.2f", item.productMatchScore)}%
-Method: ${item.matchMethod}
-YOLO: ${item.yoloConfidence}
+Product: ${bestItem.matchedProductName}
+Quantity: ${items.size}
+Objects: $objectNumbers
+Best Score: ${String.format(Locale.US, "%.2f", bestItem.productMatchScore)}%
+Method: ${bestItem.matchMethod}
 --------------------------------------
                 """.trimIndent()
             )
         }
+
+        val unknownItems =
+            detectedItems.filter {
+                it.matchedProductName.isNullOrBlank()
+            }
+
+        if (unknownItems.isNotEmpty()) {
+
+            val unknownNumbers =
+                unknownItems
+                    .sortedBy {
+                        it.objectIndex
+                    }
+                    .joinToString(", ") {
+                        "#${it.objectIndex}"
+                    }
+
+            Log.i(
+                HYBRID_TAG,
+                """
+Unknown Objects: ${unknownItems.size}
+Objects: $unknownNumbers
+--------------------------------------
+                """.trimIndent()
+            )
+        }
+
+        Log.i(
+            HYBRID_TAG,
+            "Total physical objects = ${detectedItems.size}, " +
+                    "unique matched products = ${groupedProducts.size}, " +
+                    "unknown objects = ${unknownItems.size}"
+        )
+
+        Log.i(
+            HYBRID_TAG,
+            "======================================"
+        )
     }
 
     // =====================================================

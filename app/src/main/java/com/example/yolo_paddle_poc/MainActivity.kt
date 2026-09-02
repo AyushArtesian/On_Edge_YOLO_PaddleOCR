@@ -53,6 +53,10 @@ class MainActivity : AppCompatActivity() {
         private const val OCR_CROP_SCALE = 3.0f
         private const val OCR_TO_OBJECT_OVERLAP_THRESHOLD = 0.50f
 
+        // Prominent product-title selection.
+        private const val PROMINENT_MAX_LINES = 4
+        private const val PROMINENT_MIN_RELATIVE_HEIGHT = 0.025f
+
         private const val TOP_K = 5
 
         private const val FINAL_STRONG_THRESHOLD = 0.75
@@ -114,6 +118,15 @@ class MainActivity : AppCompatActivity() {
         val text: String,
         val confidence: Float,
         val rect: RectF
+    )
+
+    private data class ScoredOcrLine(
+        val box: OcrTextBox,
+        val score: Double,
+        val relativeHeight: Float,
+        val relativeArea: Float,
+        val uppercaseRatio: Double,
+        val isNoise: Boolean
     )
 
     private data class ProductResolution(
@@ -932,18 +945,26 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
 
-            val fullImageText =
+            val fullImageRawText =
                 mappedLines
-                    .map {
-                        it.text.trim()
-                    }
-                    .filter {
-                        it.isNotBlank()
-                    }
-                    .joinToString(
-                        separator = " "
-                    )
+                    .map { it.text.trim() }
+                    .filter { it.isNotBlank() }
+                    .joinToString(" ")
                     .trim()
+
+            val prominentFullImageLines =
+                selectProminentOcrLines(
+                    lines = mappedLines,
+                    referenceWidth = max(1f, objectBox.rect.width()),
+                    referenceHeight = max(1f, objectBox.rect.height()),
+                    sourceLabel = "FULL_IMAGE Object #${objectBox.objectIndex}"
+                )
+
+            val fullImageText =
+                prominentFullImageLines
+                    .joinToString(" ") { it.text.trim() }
+                    .trim()
+                    .ifBlank { fullImageRawText }
 
             val fullImageResolution =
                 if (fullImageText.isNotBlank()) {
@@ -972,7 +993,9 @@ class MainActivity : AppCompatActivity() {
 Object #${objectBox.objectIndex}
 OCR source: FULL_IMAGE
 Mapped OCR lines: ${mappedLines.size}
-OCR text: $fullImageText
+Raw OCR text: ${if (fullImageRawText.isBlank()) "<none>" else fullImageRawText}
+Prominent OCR lines: ${prominentFullImageLines.size}
+Prominent OCR text: ${if (fullImageText.isBlank()) "<none>" else fullImageText}
 Matched: ${fullImageResolution.productName}
 Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
                     """.trimIndent()
@@ -1002,7 +1025,7 @@ Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
                             fullImageText,
 
                         ocrLineCount =
-                            mappedLines.size,
+                            prominentFullImageLines.size,
 
                         ocrTimeMs =
                             fullOcrElapsed,
@@ -1067,25 +1090,40 @@ Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
                         ocrInput
                     )
 
-                val cropAcceptedLines =
+                val cropAcceptedBoxes =
                     cropOcrResult.results
                         .filter {
-                            it.confidence >=
-                                    OCR_CONFIDENCE_THRESHOLD
+                            it.confidence >= OCR_CONFIDENCE_THRESHOLD
                         }
-                        .map {
-                            it.text.trim()
+                        .mapNotNull {
+                            convertOcrResultToTextBox(it)
                         }
                         .filter {
-                            it.isNotBlank()
+                            it.text.isNotBlank()
                         }
 
-                val cropText =
-                    cropAcceptedLines
-                        .joinToString(
-                            separator = " "
+                val cropRawText =
+                    cropAcceptedBoxes
+                        .sortedWith(
+                            compareBy<OcrTextBox> { it.rect.top }
+                                .thenBy { it.rect.left }
                         )
+                        .joinToString(" ") { it.text.trim() }
                         .trim()
+
+                val prominentCropLines =
+                    selectProminentOcrLines(
+                        lines = cropAcceptedBoxes,
+                        referenceWidth = max(1f, ocrInput.width.toFloat()),
+                        referenceHeight = max(1f, ocrInput.height.toFloat()),
+                        sourceLabel = "CROP Object #${objectBox.objectIndex}"
+                    )
+
+                val cropText =
+                    prominentCropLines
+                        .joinToString(" ") { it.text.trim() }
+                        .trim()
+                        .ifBlank { cropRawText }
 
                 val cropResolution =
                     if (cropText.isNotBlank()) {
@@ -1136,9 +1174,9 @@ Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
 
                 val selectedLineCount =
                     if (useCropDiagnostics) {
-                        cropAcceptedLines.size
+                        prominentCropLines.size
                     } else {
-                        mappedLines.size
+                        prominentFullImageLines.size
                     }
 
                 val selectedResolution =
@@ -1165,10 +1203,13 @@ Score: ${String.format(Locale.US, "%.4f", fullImageResolution.score)}
                     """
 Object #${objectBox.objectIndex}
 OCR source: CROP_FALLBACK
-Full-image text: ${if (fullImageText.isBlank()) "<none>" else fullImageText}
+Full-image raw text: ${if (fullImageRawText.isBlank()) "<none>" else fullImageRawText}
+Full-image prominent text: ${if (fullImageText.isBlank()) "<none>" else fullImageText}
 Crop OCR raw lines: ${cropOcrResult.results.size}
-Crop accepted lines: ${cropAcceptedLines.size}
-Crop OCR text: ${if (cropText.isBlank()) "<none>" else cropText}
+Crop accepted boxes: ${cropAcceptedBoxes.size}
+Crop raw text: ${if (cropRawText.isBlank()) "<none>" else cropRawText}
+Crop prominent lines: ${prominentCropLines.size}
+Crop prominent text: ${if (cropText.isBlank()) "<none>" else cropText}
 Final matched: ${selectedResolution.productName ?: "Unknown"}
 Final score: ${String.format(Locale.US, "%.4f", selectedResolution.score)}
 Crop OCR time: ${cropElapsed}ms
@@ -1256,7 +1297,7 @@ Crop OCR time: ${cropElapsed}ms
                             fallbackText,
 
                         ocrLineCount =
-                            mappedLines.size,
+                            prominentFullImageLines.size,
 
                         ocrTimeMs =
                             fullOcrElapsed,
@@ -1297,6 +1338,291 @@ Crop OCR time: ${cropElapsed}ms
         )
 
         return items
+    }
+
+    // =====================================================
+    // PROMINENT / TITLE-LIKE OCR TEXT SELECTION
+    // =====================================================
+
+    private fun selectProminentOcrLines(
+        lines: List<OcrTextBox>,
+        referenceWidth: Float,
+        referenceHeight: Float,
+        sourceLabel: String
+    ): List<OcrTextBox> {
+
+        if (lines.isEmpty()) {
+            return emptyList()
+        }
+
+        val safeWidth = max(1f, referenceWidth)
+        val safeHeight = max(1f, referenceHeight)
+        val safeArea = safeWidth * safeHeight
+
+        val scored =
+            lines.mapNotNull { box ->
+
+                val cleanedText =
+                    box.text
+                        .trim()
+                        .replace(Regex("\\s+"), " ")
+
+                if (cleanedText.isBlank()) {
+                    return@mapNotNull null
+                }
+
+                val relativeHeight =
+                    (box.rect.height() / safeHeight)
+                        .coerceIn(0f, 1f)
+
+                val relativeArea =
+                    ((box.rect.width() * box.rect.height()) / safeArea)
+                        .coerceIn(0f, 1f)
+
+                val uppercaseRatio =
+                    calculateUppercaseRatio(cleanedText)
+
+                val titleLikeBonus =
+                    calculateTitleLikeBonus(cleanedText)
+
+                val noise =
+                    isPackagingNoiseText(cleanedText)
+
+                var score =
+                    0.52 * relativeHeight.toDouble() +
+                            0.18 * relativeArea.toDouble() +
+                            0.12 * uppercaseRatio +
+                            0.10 * titleLikeBonus +
+                            0.08 * box.confidence.toDouble().coerceIn(0.0, 1.0)
+
+                if (noise) score -= 0.45
+                if (looksLikeMostlyNumbers(cleanedText)) score -= 0.30
+                if (cleanedText.length <= 1) score -= 0.25
+
+                ScoredOcrLine(
+                    box = box.copy(text = cleanedText),
+                    score = score,
+                    relativeHeight = relativeHeight,
+                    relativeArea = relativeArea,
+                    uppercaseRatio = uppercaseRatio,
+                    isNoise = noise
+                )
+            }
+
+        if (scored.isEmpty()) {
+            return emptyList()
+        }
+
+        val largestRelativeHeight =
+            scored.maxOfOrNull { it.relativeHeight } ?: 0f
+
+        val dynamicHeightFloor =
+            max(
+                PROMINENT_MIN_RELATIVE_HEIGHT,
+                largestRelativeHeight * 0.42f
+            )
+
+        var selected =
+            scored
+                .filter {
+                    !it.isNoise &&
+                            it.relativeHeight >= dynamicHeightFloor
+                }
+                .sortedByDescending { it.score }
+                .take(PROMINENT_MAX_LINES)
+
+        if (selected.isEmpty()) {
+            selected =
+                scored
+                    .filter { !it.isNoise }
+                    .sortedByDescending { it.score }
+                    .take(min(2, PROMINENT_MAX_LINES))
+        }
+
+        val readingOrder =
+            selected
+                .map { it.box }
+                .sortedWith(
+                    compareBy<OcrTextBox> { it.rect.top }
+                        .thenBy { it.rect.left }
+                )
+
+        Log.i(
+            OCR_TAG,
+            buildString {
+                appendLine("PROMINENT OCR SELECTION [$sourceLabel]")
+
+                scored
+                    .sortedByDescending { it.score }
+                    .forEach { item ->
+
+                        val keep =
+                            readingOrder.any {
+                                it.text == item.box.text &&
+                                        it.rect == item.box.rect
+                            }
+
+                        appendLine(
+                            "${if (keep) "[KEEP]" else "[DROP]"} " +
+                                    "'${item.box.text}' " +
+                                    "score=${String.format(Locale.US, "%.3f", item.score)} " +
+                                    "h=${String.format(Locale.US, "%.3f", item.relativeHeight)} " +
+                                    "area=${String.format(Locale.US, "%.3f", item.relativeArea)} " +
+                                    "upper=${String.format(Locale.US, "%.2f", item.uppercaseRatio)} " +
+                                    "conf=${String.format(Locale.US, "%.2f", item.box.confidence)} " +
+                                    "noise=${item.isNoise}"
+                        )
+                    }
+
+                append(
+                    "SELECTED TEXT: " +
+                            if (readingOrder.isEmpty()) {
+                                "<none>"
+                            } else {
+                                readingOrder.joinToString(" ") { it.text }
+                            }
+                )
+            }
+        )
+
+        return readingOrder
+    }
+
+    private fun calculateUppercaseRatio(
+        text: String
+    ): Double {
+
+        val letters =
+            text.filter { it.isLetter() }
+
+        if (letters.isEmpty()) {
+            return 0.0
+        }
+
+        return letters.count { it.isUpperCase() }
+            .toDouble() /
+                letters.length.toDouble()
+    }
+
+    private fun calculateTitleLikeBonus(
+        text: String
+    ): Double {
+
+        val words =
+            text.split(Regex("\\s+"))
+                .filter { word ->
+                    word.any { it.isLetter() }
+                }
+
+        if (words.isEmpty()) {
+            return 0.0
+        }
+
+        val titleLikeWords =
+            words.count { word ->
+                word.firstOrNull { it.isLetter() }
+                    ?.isUpperCase() == true
+            }
+
+        return (
+                titleLikeWords.toDouble() /
+                        words.size.toDouble()
+                ).coerceIn(0.0, 1.0)
+    }
+
+    private fun isPackagingNoiseText(
+        text: String
+    ): Boolean {
+
+        val normalized =
+            text.lowercase(Locale.ROOT)
+                .replace(Regex("[^a-z0-9₹%./ ]"), " ")
+                .replace(Regex("\\s+"), " ")
+                .trim()
+
+        if (normalized.isBlank()) {
+            return true
+        }
+
+        val noisePhrases =
+            listOf(
+                "mrp",
+                "m.r.p",
+                "net qty",
+                "net quantity",
+                "net weight",
+                "ingredients",
+                "ingredient",
+                "nutrition",
+                "nutritional",
+                "manufactured by",
+                "manufactured",
+                "marketed by",
+                "packed by",
+                "customer care",
+                "consumer care",
+                "batch",
+                "batch no",
+                "lot no",
+                "mfg",
+                "mfd",
+                "expiry",
+                "exp date",
+                "best before",
+                "use before",
+                "fssai",
+                "license no",
+                "lic no",
+                "email",
+                "www.",
+                "http",
+                "telephone",
+                "phone"
+            )
+
+        if (noisePhrases.any { normalized.contains(it) }) {
+            return true
+        }
+
+        val quantityOrPrice =
+            Regex(
+                """^\s*(?:₹|rs\.?\s*)?\d+(?:[.,]\d+)?\s*(?:g|gm|gms|kg|ml|l|ltr|litre|litres|oz|lb|pcs|pc)?\.?\s*$""",
+                RegexOption.IGNORE_CASE
+            )
+
+        if (quantityOrPrice.matches(normalized)) {
+            return true
+        }
+
+        val digits =
+            normalized.count { it.isDigit() }
+
+        val letters =
+            normalized.count { it.isLetter() }
+
+        if (digits >= 6 && digits > letters * 2) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun looksLikeMostlyNumbers(
+        text: String
+    ): Boolean {
+
+        val alphaNumeric =
+            text.filter { it.isLetterOrDigit() }
+
+        if (alphaNumeric.isEmpty()) {
+            return true
+        }
+
+        val digitCount =
+            alphaNumeric.count { it.isDigit() }
+
+        return digitCount.toDouble() /
+                alphaNumeric.length.toDouble() >= 0.70
     }
 
     // =====================================================

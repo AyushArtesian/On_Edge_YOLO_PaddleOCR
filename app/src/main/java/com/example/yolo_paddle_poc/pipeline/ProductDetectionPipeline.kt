@@ -379,6 +379,14 @@ class ProductDetectionPipeline(
                     )
                 )
 
+                if (selectedResolution.productName == null) {
+                    Log.i(
+                        MAPPING_TAG,
+                        "Object #${objectBox.objectIndex} kept as UNKNOWN product; " +
+                                "YOLO detection is preserved and will still be displayed."
+                    )
+                }
+
             } catch (e: Exception) {
 
                 Log.e(

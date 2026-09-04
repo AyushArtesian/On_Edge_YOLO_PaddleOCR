@@ -5,7 +5,6 @@ import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
 import android.content.Context
 import android.util.Log
-import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -26,9 +25,6 @@ class TextEmbeddingMatcher(
         private const val VOCAB_PATH =
             "text_matcher/vocab.txt"
 
-        private const val PRODUCT_NAMES_PATH =
-            "text_matcher/product_names.json"
-
         private const val PRODUCT_EMBEDDINGS_PATH =
             "text_matcher/product_embeddings.bin"
 
@@ -44,7 +40,21 @@ class TextEmbeddingMatcher(
 
     data class MatchResult(
         val productName: String,
-        val score: Float
+        val score: Float,
+        val productId: String = "",
+        val brand: String = "",
+        val category: String = "",
+        val matchedVariant: String = "",
+        val variantType: String = ""
+    )
+
+    private data class EmbeddingEntry(
+        val productId: String,
+        val productName: String,
+        val brand: String,
+        val category: String,
+        val text: String,
+        val variantType: String
     )
 
     private val environment: OrtEnvironment =
@@ -59,27 +69,33 @@ class TextEmbeddingMatcher(
     private var sepId = 102
     private var unkId = 100
 
-    private val productNames =
-        mutableListOf<String>()
+    private val embeddingEntries =
+        mutableListOf<EmbeddingEntry>()
 
     private lateinit var productEmbeddings:
             Array<FloatArray>
 
-    private var embeddingDimension =
-        384
+    private var embeddingDimension = 384
+    private var metadataNormalized = true
 
     init {
         loadVocab()
-        loadMetadata()
-        loadProductNames()
+        loadMetadataAndEntries()
         loadProductEmbeddings()
         loadModel()
+
+        val canonicalProducts =
+            embeddingEntries
+                .map { it.productId }
+                .distinct()
+                .size
 
         Log.i(
             TAG,
             "TextEmbeddingMatcher READY: " +
-                    "${productNames.size} products, " +
-                    "${embeddingDimension}D"
+                    "${embeddingEntries.size} embedding variants, " +
+                    "$canonicalProducts canonical products, " +
+                    "${embeddingDimension}D, normalized=$metadataNormalized"
         )
     }
 
@@ -108,12 +124,16 @@ class TextEmbeddingMatcher(
         val queryEmbedding =
             embedText(text)
 
-        val results =
-            ArrayList<MatchResult>(
-                productNames.size
-            )
+        // One product can have many embedding rows:
+        // name, brand, aliases and search_text.
+        // Keep only the strongest row for each canonical product_id.
+        val bestByProduct =
+            LinkedHashMap<String, MatchResult>()
 
-        for (index in productNames.indices) {
+        for (index in embeddingEntries.indices) {
+
+            val entry =
+                embeddingEntries[index]
 
             val score =
                 dotProduct(
@@ -121,18 +141,29 @@ class TextEmbeddingMatcher(
                     productEmbeddings[index]
                 )
 
-            results.add(
-                MatchResult(
-                    productName =
-                        productNames[index],
-                    score =
-                        score
-                )
-            )
+            val current =
+                bestByProduct[entry.productId]
+
+            if (
+                current == null ||
+                score > current.score
+            ) {
+                bestByProduct[entry.productId] =
+                    MatchResult(
+                        productName = entry.productName,
+                        score = score,
+                        productId = entry.productId,
+                        brand = entry.brand,
+                        category = entry.category,
+                        matchedVariant = entry.text,
+                        variantType = entry.variantType
+                    )
+            }
         }
 
         val top =
-            results
+            bestByProduct
+                .values
                 .sortedByDescending {
                     it.score
                 }
@@ -147,20 +178,25 @@ class TextEmbeddingMatcher(
                 appendLine("OCR:")
                 appendLine(text)
                 appendLine()
-                appendLine("TOP EMBEDDING CANDIDATES:")
+                appendLine("TOP CANONICAL EMBEDDING CANDIDATES:")
 
-                top.forEachIndexed {
-                        index,
-                        candidate ->
-
+                top.forEachIndexed { index, candidate ->
                     appendLine(
-                        "${index + 1}. " +
-                                "${candidate.productName} = " +
+                        "${index + 1}. ${candidate.productName} = " +
                                 String.format(
                                     Locale.US,
                                     "%.4f",
                                     candidate.score
                                 )
+                    )
+                    appendLine(
+                        "   productId=${candidate.productId} " +
+                                "brand=${candidate.brand.ifBlank { "<none>" }} " +
+                                "category=${candidate.category}"
+                    )
+                    appendLine(
+                        "   bestVariant='${candidate.matchedVariant}' " +
+                                "type=${candidate.variantType}"
                     )
                 }
 
@@ -225,7 +261,7 @@ class TextEmbeddingMatcher(
         )
     }
 
-    private fun loadMetadata() {
+    private fun loadMetadataAndEntries() {
 
         val json =
             context.assets
@@ -238,35 +274,94 @@ class TextEmbeddingMatcher(
                 }
 
         embeddingDimension =
-            json.getInt(
-                "dimension"
-            )
-    }
+            when {
+                json.has("embedding_dimension") ->
+                    json.getInt("embedding_dimension")
 
-    private fun loadProductNames() {
+                // Backward-compatible fallback for old metadata.
+                json.has("dimension") ->
+                    json.getInt("dimension")
 
-        val jsonText =
-            context.assets
-                .open(PRODUCT_NAMES_PATH)
-                .bufferedReader()
-                .use {
-                    it.readText()
-                }
+                else ->
+                    384
+            }
 
-        val array =
-            JSONArray(
-                jsonText
-            )
+        metadataNormalized =
+            if (json.has("normalized")) {
+                json.optBoolean("normalized", true)
+            } else {
+                true
+            }
 
-        for (
-        index in
-        0 until array.length()
-        ) {
+        val entries =
+            json.optJSONArray("entries")
+                ?: throw IllegalStateException(
+                    "New embedding metadata must contain an 'entries' array."
+                )
 
-            productNames.add(
-                array.getString(index)
+        embeddingEntries.clear()
+
+        for (index in 0 until entries.length()) {
+
+            val item =
+                entries.getJSONObject(index)
+
+            val productId =
+                item.optString("product_id").trim()
+
+            val productName =
+                item.optString("product_name").trim()
+
+            val variantText =
+                item.optString("text").trim()
+
+            require(productId.isNotBlank()) {
+                "Metadata entry $index has empty product_id"
+            }
+
+            require(productName.isNotBlank()) {
+                "Metadata entry $index has empty product_name"
+            }
+
+            require(variantText.isNotBlank()) {
+                "Metadata entry $index has empty text"
+            }
+
+            embeddingEntries.add(
+                EmbeddingEntry(
+                    productId = productId,
+                    productName = productName,
+                    brand = item.optString("brand"),
+                    category = item.optString("category"),
+                    text = variantText,
+                    variantType =
+                        item.optString(
+                            "variant_type",
+                            "unknown"
+                        )
+                )
             )
         }
+
+        val declaredTotal =
+            json.optInt(
+                "total_embeddings",
+                embeddingEntries.size
+            )
+
+        require(
+            declaredTotal == embeddingEntries.size
+        ) {
+            "Metadata count mismatch. " +
+                    "Declared $declaredTotal entries but parsed ${embeddingEntries.size}."
+        }
+
+        Log.i(
+            TAG,
+            "Embedding metadata loaded: " +
+                    "${embeddingEntries.size} variants, " +
+                    "${embeddingDimension}D"
+        )
     }
 
     private fun loadProductEmbeddings() {
@@ -279,7 +374,7 @@ class TextEmbeddingMatcher(
                 .readBytes()
 
         val expectedFloatCount =
-            productNames.size *
+            embeddingEntries.size *
                     embeddingDimension
 
         val actualFloatCount =
@@ -304,7 +399,7 @@ class TextEmbeddingMatcher(
 
         productEmbeddings =
             Array(
-                productNames.size
+                embeddingEntries.size
             ) {
 
                 FloatArray(
@@ -314,7 +409,7 @@ class TextEmbeddingMatcher(
 
         for (
         productIndex in
-        productNames.indices
+        embeddingEntries.indices
         ) {
 
             for (

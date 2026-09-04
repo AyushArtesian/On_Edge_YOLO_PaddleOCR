@@ -15,24 +15,29 @@ class HybridProductResolver(
         private const val TAG = "HYBRID_PRODUCT_RESOLVER"
 
         private const val TOP_K = 5
+
         private const val FINAL_STRONG_THRESHOLD = 0.75
         private const val FINAL_AGREEMENT_THRESHOLD = 0.50
 
         private const val EMBEDDING_WEIGHT = 0.55
         private const val FUZZY_WEIGHT = 0.45
         private const val AGREEMENT_BONUS = 0.10
+
         private const val FUZZY_STRONG_OVERRIDE = 0.88
     }
 
     private data class Candidate(
-        val displayName: String,
-        val key: String,
+        val productId: String,
+        var displayName: String,
         var embeddingScore: Double = 0.0,
         var fuzzyScore: Double = 0.0,
         var inEmbedding: Boolean = false,
-        var inFuzzy: Boolean = false
+        var inFuzzy: Boolean = false,
+        var fuzzyAlias: String? = null
     ) {
+
         fun combinedScore(): Double {
+
             var score =
                 EMBEDDING_WEIGHT * embeddingScore +
                         FUZZY_WEIGHT * fuzzyScore
@@ -41,7 +46,10 @@ class HybridProductResolver(
                 score += AGREEMENT_BONUS
             }
 
-            return score.coerceIn(0.0, 1.0)
+            return score.coerceIn(
+                0.0,
+                1.0
+            )
         }
     }
 
@@ -65,34 +73,52 @@ class HybridProductResolver(
             embeddingTop.isEmpty() &&
             fuzzyTop.isEmpty()
         ) {
-            return ProductResolution(
-                productName = null,
-                score = 0.0,
-                method = "UNKNOWN"
-            )
+            return unknownResolution()
         }
 
+        /*
+         * The KEY CHANGE:
+         *
+         * candidates are keyed by canonical product_id rather than by
+         * display-name strings.
+         */
         val candidates =
             LinkedHashMap<String, Candidate>()
 
         embeddingTop.forEach { match ->
 
-            val key =
-                canonicalKey(match.productName)
+            /*
+             * TextEmbeddingMatcher already returns a canonical product name.
+             * ProductMatcher is built from the exact same metadata, so it can
+             * map that canonical name back to its product_id.
+             */
+            val productId =
+                productMatcher
+                    .productIdForCanonicalName(
+                        match.productName
+                    )
+                    ?: "embedding:${canonicalKey(match.productName)}"
 
             val candidate =
-                candidates.getOrPut(key) {
+                candidates.getOrPut(productId) {
                     Candidate(
-                        displayName = match.productName,
-                        key = key
+                        productId = productId,
+                        displayName = match.productName
                     )
                 }
+
+            candidate.displayName =
+                match.productName
 
             candidate.embeddingScore =
                 maxOf(
                     candidate.embeddingScore,
-                    match.score.toDouble()
-                        .coerceIn(0.0, 1.0)
+                    match.score
+                        .toDouble()
+                        .coerceIn(
+                            0.0,
+                            1.0
+                        )
                 )
 
             candidate.inEmbedding = true
@@ -100,40 +126,49 @@ class HybridProductResolver(
 
         fuzzyTop.forEach { match ->
 
-            val key =
-                canonicalKey(match.product.name)
+            val productId =
+                match.product.id
 
             val candidate =
-                candidates.getOrPut(key) {
+                candidates.getOrPut(productId) {
                     Candidate(
-                        displayName = match.product.name,
-                        key = key
+                        productId = productId,
+                        displayName = match.product.name
                     )
                 }
 
-            candidate.fuzzyScore =
-                maxOf(
-                    candidate.fuzzyScore,
-                    (match.score / 100.0)
-                        .coerceIn(0.0, 1.0)
-                )
+            /*
+             * Prefer the canonical name from the shared product metadata.
+             */
+            candidate.displayName =
+                match.product.name
+
+            val score =
+                (match.score / 100.0)
+                    .coerceIn(
+                        0.0,
+                        1.0
+                    )
+
+            if (score >= candidate.fuzzyScore) {
+                candidate.fuzzyScore = score
+                candidate.fuzzyAlias =
+                    match.matchedAlias
+            }
 
             candidate.inFuzzy = true
         }
 
         val ranked =
-            candidates.values
+            candidates
+                .values
                 .sortedByDescending {
                     it.combinedScore()
                 }
 
         val best =
             ranked.firstOrNull()
-                ?: return ProductResolution(
-                    productName = null,
-                    score = 0.0,
-                    method = "UNKNOWN"
-                )
+                ?: return unknownResolution()
 
         val finalScore =
             best.combinedScore()
@@ -148,11 +183,14 @@ class HybridProductResolver(
 
         val accepted =
             when {
+
                 bothAgree &&
-                        finalScore >= FINAL_AGREEMENT_THRESHOLD ->
+                        finalScore >=
+                        FINAL_AGREEMENT_THRESHOLD ->
                     true
 
-                finalScore >= FINAL_STRONG_THRESHOLD ->
+                finalScore >=
+                        FINAL_STRONG_THRESHOLD ->
                     true
 
                 strongFuzzy ->
@@ -164,6 +202,7 @@ class HybridProductResolver(
 
         val method =
             when {
+
                 !accepted ->
                     "UNKNOWN"
 
@@ -180,56 +219,134 @@ class HybridProductResolver(
         Log.i(
             TAG,
             buildString {
+
                 appendLine("====================================")
                 appendLine("OCR:")
                 appendLine(ocrText)
                 appendLine()
-                appendLine("HYBRID CANDIDATES:")
+                appendLine("HYBRID CANONICAL CANDIDATES:")
 
-                ranked.take(8)
-                    .forEachIndexed { index, c ->
-                        appendLine("${index + 1}. ${c.displayName}")
+                ranked
+                    .take(8)
+                    .forEachIndexed {
+                            index,
+                            candidate ->
+
+                        appendLine(
+                            "${index + 1}. ${candidate.displayName}"
+                        )
+
+                        appendLine(
+                            "   productId=${candidate.productId}"
+                        )
+
                         appendLine(
                             "   embedding=" +
-                                    String.format(Locale.US, "%.4f", c.embeddingScore) +
+                                    String.format(
+                                        Locale.US,
+                                        "%.4f",
+                                        candidate.embeddingScore
+                                    ) +
                                     " fuzzy=" +
-                                    String.format(Locale.US, "%.4f", c.fuzzyScore) +
+                                    String.format(
+                                        Locale.US,
+                                        "%.4f",
+                                        candidate.fuzzyScore
+                                    ) +
                                     " both=" +
-                                    (c.inEmbedding && c.inFuzzy) +
+                                    bothFor(candidate) +
                                     " final=" +
-                                    String.format(Locale.US, "%.4f", c.combinedScore())
+                                    String.format(
+                                        Locale.US,
+                                        "%.4f",
+                                        candidate.combinedScore()
+                                    )
                         )
+
+                        if (
+                            !candidate.fuzzyAlias
+                                .isNullOrBlank()
+                        ) {
+                            appendLine(
+                                "   fuzzyAlias='${candidate.fuzzyAlias}'"
+                            )
+                        }
                     }
 
                 appendLine()
+
                 appendLine(
                     "FINAL: " +
-                            if (accepted) best.displayName else "Unknown"
+                            if (accepted) {
+                                best.displayName
+                            } else {
+                                "Unknown"
+                            }
                 )
+
+                appendLine(
+                    "FINAL PRODUCT ID: ${best.productId}"
+                )
+
                 appendLine(
                     "FINAL SCORE: " +
-                            String.format(Locale.US, "%.4f", finalScore)
+                            String.format(
+                                Locale.US,
+                                "%.4f",
+                                finalScore
+                            )
                 )
-                appendLine("METHOD: $method")
+
+                appendLine(
+                    "METHOD: $method"
+                )
+
                 append("====================================")
             }
         )
 
         return if (accepted) {
+
             ProductResolution(
-                productName = best.displayName,
-                score = finalScore,
-                method = method
+                productName =
+                    best.displayName,
+                score =
+                    finalScore,
+                method =
+                    method
             )
+
         } else {
+
             ProductResolution(
-                productName = null,
-                score = finalScore,
-                method = "UNKNOWN"
+                productName =
+                    null,
+                score =
+                    finalScore,
+                method =
+                    "UNKNOWN"
             )
         }
     }
 
+    private fun bothFor(
+        candidate: Candidate
+    ): Boolean =
+        candidate.inEmbedding &&
+                candidate.inFuzzy
+
+    private fun unknownResolution():
+            ProductResolution =
+        ProductResolution(
+            productName = null,
+            score = 0.0,
+            method = "UNKNOWN"
+        )
+
+    /*
+     * Kept because MainActivity uses this method for grouping displayed
+     * canonical product names.
+     */
     fun canonicalKey(
         value: String
     ): String =
@@ -239,5 +356,8 @@ class HybridProductResolver(
             .replace("'", "")
             .replace("’", "")
             .replace("-", "")
-            .replace(Regex("[^a-z0-9]"), "")
+            .replace(
+                Regex("[^a-z0-9]"),
+                ""
+            )
 }

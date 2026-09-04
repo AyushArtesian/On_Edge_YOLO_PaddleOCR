@@ -1,7 +1,3257 @@
 {
-  "count": 331,
-  "dimension": 384,
-  "dtype": "float32",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dimension": 384,
   "normalized": true,
-  "model": "sentence-transformers/all-MiniLM-L6-v2"
+  "total_embeddings": 406,
+  "total_products": 82,
+  "entries": [
+    {
+      "product_id": "aashirvaad_whole_wheat_atta",
+      "product_name": "Aashirvaad Whole Wheat Atta",
+      "brand": "Aashirvaad",
+      "category": "Atta & Flour",
+      "text": "Aashirvaad Whole Wheat Atta",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "aashirvaad_whole_wheat_atta",
+      "product_name": "Aashirvaad Whole Wheat Atta",
+      "brand": "Aashirvaad",
+      "category": "Atta & Flour",
+      "text": "Aashirvaad",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "aashirvaad_whole_wheat_atta",
+      "product_name": "Aashirvaad Whole Wheat Atta",
+      "brand": "Aashirvaad",
+      "category": "Atta & Flour",
+      "text": "Aashirvaad Atta",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "aashirvaad_whole_wheat_atta",
+      "product_name": "Aashirvaad Whole Wheat Atta",
+      "brand": "Aashirvaad",
+      "category": "Atta & Flour",
+      "text": "Aashirvaad Wheat Flour",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "aashirvaad_whole_wheat_atta",
+      "product_name": "Aashirvaad Whole Wheat Atta",
+      "brand": "Aashirvaad",
+      "category": "Atta & Flour",
+      "text": "Aashirvaad Whole Wheat Atta | Aashirvaad | Atta & Flour | Aashirvaad Whole Wheat Atta | Aashirvaad | Aashirvaad Atta | Aashirvaad Wheat Flour",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "annapurna_special_atta",
+      "product_name": "Annapurna Special Atta",
+      "brand": "Annapurna",
+      "category": "Atta & Flour",
+      "text": "Annapurna Special Atta",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "annapurna_special_atta",
+      "product_name": "Annapurna Special Atta",
+      "brand": "Annapurna",
+      "category": "Atta & Flour",
+      "text": "Annapurna",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "annapurna_special_atta",
+      "product_name": "Annapurna Special Atta",
+      "brand": "Annapurna",
+      "category": "Atta & Flour",
+      "text": "Annapurna Atta",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "annapurna_special_atta",
+      "product_name": "Annapurna Special Atta",
+      "brand": "Annapurna",
+      "category": "Atta & Flour",
+      "text": "Annapurna Special Atta | Annapurna | Atta & Flour | Annapurna Special Atta | Annapurna | Annapurna Atta",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "india_gate_classic_basmati",
+      "product_name": "India Gate Classic Basmati Rice",
+      "brand": "India Gate",
+      "category": "Rice",
+      "text": "India Gate Classic Basmati Rice",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "india_gate_classic_basmati",
+      "product_name": "India Gate Classic Basmati Rice",
+      "brand": "India Gate",
+      "category": "Rice",
+      "text": "India Gate",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "india_gate_classic_basmati",
+      "product_name": "India Gate Classic Basmati Rice",
+      "brand": "India Gate",
+      "category": "Rice",
+      "text": "India Gate Basmati Rice",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "india_gate_classic_basmati",
+      "product_name": "India Gate Classic Basmati Rice",
+      "brand": "India Gate",
+      "category": "Rice",
+      "text": "India Gate Classic",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "india_gate_classic_basmati",
+      "product_name": "India Gate Classic Basmati Rice",
+      "brand": "India Gate",
+      "category": "Rice",
+      "text": "India Gate Classic Basmati Rice | India Gate | Rice | India Gate Classic Basmati Rice | India Gate | India Gate Basmati Rice | India Gate Classic",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "tata_salt",
+      "product_name": "Tata Salt",
+      "brand": "Tata",
+      "category": "Salt",
+      "text": "Tata Salt",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "tata_salt",
+      "product_name": "Tata Salt",
+      "brand": "Tata",
+      "category": "Salt",
+      "text": "Tata",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "tata_salt",
+      "product_name": "Tata Salt",
+      "brand": "Tata",
+      "category": "Salt",
+      "text": "Tata Namak",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "tata_salt",
+      "product_name": "Tata Salt",
+      "brand": "Tata",
+      "category": "Salt",
+      "text": "Tata Salt | Tata | Salt | Tata Salt | Tata | Tata Namak",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Hide & Seek Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Hide & Seek",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Hide Seek",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Hide & Seek",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Hide & Seek Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_hide_seek",
+      "product_name": "Parle Hide & Seek Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Hide & Seek Biscuits | Parle | Biscuits & Cookies | Parle Hide & Seek Biscuits | Parle | Hide & Seek | Hide Seek | Parle Hide & Seek | Hide & Seek Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle-G Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle-G",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "ParleG",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle-G Original Gluco Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_g",
+      "product_name": "Parle-G Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle-G Biscuits | Parle | Biscuits & Cookies | Parle-G Biscuits | Parle | Parle-G | ParleG | Parle-G Original Gluco Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Monaco Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Monaco",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Monaco",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Monaco Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Monaco Classic",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "parle_monaco",
+      "product_name": "Parle Monaco Biscuits",
+      "brand": "Parle",
+      "category": "Biscuits & Cookies",
+      "text": "Parle Monaco Biscuits | Parle | Biscuits & Cookies | Parle Monaco Biscuits | Parle | Monaco | Parle Monaco | Monaco Biscuits | Monaco Classic",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Good Day Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Good Day",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Good Day",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Good Day Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_good_day",
+      "product_name": "Britannia Good Day Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Good Day Biscuits | Britannia | Biscuits & Cookies | Britannia Good Day Biscuits | Britannia | Good Day | Britannia Good Day | Good Day Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Marie Gold Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Marie Gold",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Marie Gold",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Marie Gold Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_marie_gold",
+      "product_name": "Britannia Marie Gold Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Marie Gold Biscuits | Britannia | Biscuits & Cookies | Britannia Marie Gold Biscuits | Britannia | Marie Gold | Britannia Marie Gold | Marie Gold Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi 2-Minute Noodles Masala",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi 2 Minute Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Masala Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Masala",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "2 Minute Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_masala",
+      "product_name": "Maggi 2-Minute Noodles Masala",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi 2-Minute Noodles Masala | Maggi | Instant Noodles | Maggi 2-Minute Noodles Masala | Maggi | Maggi 2 Minute Noodles | Maggi Masala Noodles | Maggi Masala | 2 Minute Noodles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Veg Atta Noodles",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Vegetable Atta Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Nutri-licious Veg Atta Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Veg Atta Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_veg_atta",
+      "product_name": "Maggi Veg Atta Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Veg Atta Noodles | Maggi | Instant Noodles | Maggi Veg Atta Noodles | Maggi | Maggi Vegetable Atta Noodles | Maggi Nutri-licious Veg Atta Noodles | Veg Atta Noodles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "maggi_oats",
+      "product_name": "Maggi Oats Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Oats Noodles",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "maggi_oats",
+      "product_name": "Maggi Oats Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "maggi_oats",
+      "product_name": "Maggi Oats Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Masala Oats Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_oats",
+      "product_name": "Maggi Oats Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Oats Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_oats",
+      "product_name": "Maggi Oats Noodles",
+      "brand": "Maggi",
+      "category": "Instant Noodles",
+      "text": "Maggi Oats Noodles | Maggi | Instant Noodles | Maggi Oats Noodles | Maggi | Maggi Masala Oats Noodles | Oats Noodles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Maggi Pazzta Cheese Macaroni",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Maggi",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Maggi Pazzta",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Pazzta",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Cheese Macaroni",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "maggi_pazzta",
+      "product_name": "Maggi Pazzta Cheese Macaroni",
+      "brand": "Maggi",
+      "category": "Instant Pasta",
+      "text": "Maggi Pazzta Cheese Macaroni | Maggi | Instant Pasta | Maggi Pazzta Cheese Macaroni | Maggi | Maggi Pazzta | Pazzta | Cheese Macaroni",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Classic Salted Chips",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lays",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Chips",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lays Chips",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Classic",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lays Classic",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Classic Salted",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_classic",
+      "product_name": "Lay's Classic Salted Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Classic Salted Chips | Lay's | Chips | Lay's Classic Salted Chips | Lay's | Lays | Lay's Chips | Lays Chips | Lay's Classic | Lays Classic | Classic Salted",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Spanish Tomato Tango Chips",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Spanish Tomato Tango",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lays Spanish Tomato Tango",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Spanish Tomato Tango",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lays_spanish_tomato",
+      "product_name": "Lay's Spanish Tomato Tango Chips",
+      "brand": "Lay's",
+      "category": "Chips",
+      "text": "Lay's Spanish Tomato Tango Chips | Lay's | Chips | Lay's Spanish Tomato Tango Chips | Lay's | Lay's Spanish Tomato Tango | Lays Spanish Tomato Tango | Spanish Tomato Tango",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "too_yumm_multigrain",
+      "product_name": "Too Yumm Multigrain Chips",
+      "brand": "Too Yumm",
+      "category": "Chips",
+      "text": "Too Yumm Multigrain Chips",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "too_yumm_multigrain",
+      "product_name": "Too Yumm Multigrain Chips",
+      "brand": "Too Yumm",
+      "category": "Chips",
+      "text": "Too Yumm",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "too_yumm_multigrain",
+      "product_name": "Too Yumm Multigrain Chips",
+      "brand": "Too Yumm",
+      "category": "Chips",
+      "text": "Too Yumm Chips",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "too_yumm_multigrain",
+      "product_name": "Too Yumm Multigrain Chips",
+      "brand": "Too Yumm",
+      "category": "Chips",
+      "text": "TooYumm",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "too_yumm_multigrain",
+      "product_name": "Too Yumm Multigrain Chips",
+      "brand": "Too Yumm",
+      "category": "Chips",
+      "text": "Too Yumm Multigrain Chips | Too Yumm | Chips | Too Yumm Multigrain Chips | Too Yumm | Too Yumm Chips | TooYumm",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "haldirams_snacks",
+      "product_name": "Haldiram's Snacks",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Snacks",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "haldirams_snacks",
+      "product_name": "Haldiram's Snacks",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "haldirams_snacks",
+      "product_name": "Haldiram's Snacks",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldirams",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_snacks",
+      "product_name": "Haldiram's Snacks",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldirams Snacks",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_snacks",
+      "product_name": "Haldiram's Snacks",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Snacks | Haldiram's | Namkeen & Snacks | Haldiram's Snacks | Haldiram's | Haldirams | Haldirams Snacks",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "mccain_smiles",
+      "product_name": "McCain Smiles Potato Snacks",
+      "brand": "McCain",
+      "category": "Frozen Snacks",
+      "text": "McCain Smiles Potato Snacks",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "mccain_smiles",
+      "product_name": "McCain Smiles Potato Snacks",
+      "brand": "McCain",
+      "category": "Frozen Snacks",
+      "text": "McCain",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "mccain_smiles",
+      "product_name": "McCain Smiles Potato Snacks",
+      "brand": "McCain",
+      "category": "Frozen Snacks",
+      "text": "McCain Smiles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mccain_smiles",
+      "product_name": "McCain Smiles Potato Snacks",
+      "brand": "McCain",
+      "category": "Frozen Snacks",
+      "text": "McCain Smiles Potato",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mccain_smiles",
+      "product_name": "McCain Smiles Potato Snacks",
+      "brand": "McCain",
+      "category": "Frozen Snacks",
+      "text": "McCain Smiles Potato Snacks | McCain | Frozen Snacks | McCain Smiles Potato Snacks | McCain | McCain Smiles | McCain Smiles Potato",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "coca_cola",
+      "product_name": "Coca-Cola Coke",
+      "brand": "Coca-Cola",
+      "category": "Soft Drinks",
+      "text": "Coca-Cola Coke",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "coca_cola",
+      "product_name": "Coca-Cola Coke",
+      "brand": "Coca-Cola",
+      "category": "Soft Drinks",
+      "text": "Coca-Cola",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "coca_cola",
+      "product_name": "Coca-Cola Coke",
+      "brand": "Coca-Cola",
+      "category": "Soft Drinks",
+      "text": "Coke",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "coca_cola",
+      "product_name": "Coca-Cola Coke",
+      "brand": "Coca-Cola",
+      "category": "Soft Drinks",
+      "text": "CocaCola",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "coca_cola",
+      "product_name": "Coca-Cola Coke",
+      "brand": "Coca-Cola",
+      "category": "Soft Drinks",
+      "text": "Coca-Cola Coke | Coca-Cola | Soft Drinks | Coca-Cola Coke | Coca-Cola | Coke | CocaCola",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "frooti",
+      "product_name": "Frooti Mango Drink",
+      "brand": "Frooti",
+      "category": "Fruit Drinks",
+      "text": "Frooti Mango Drink",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "frooti",
+      "product_name": "Frooti Mango Drink",
+      "brand": "Frooti",
+      "category": "Fruit Drinks",
+      "text": "Frooti",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "frooti",
+      "product_name": "Frooti Mango Drink",
+      "brand": "Frooti",
+      "category": "Fruit Drinks",
+      "text": "Mango Frooti",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "frooti",
+      "product_name": "Frooti Mango Drink",
+      "brand": "Frooti",
+      "category": "Fruit Drinks",
+      "text": "Frooti Mango Drink | Frooti | Fruit Drinks | Frooti Mango Drink | Frooti | Mango Frooti",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real Pomegranate Juice",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real Fruit",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real Fruit Power",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real Pomegranate",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "real_pomegranate",
+      "product_name": "Real Pomegranate Juice",
+      "brand": "Real",
+      "category": "Juice",
+      "text": "Real Pomegranate Juice | Real | Juice | Real Pomegranate Juice | Real | Real Fruit | Real Fruit Power | Real Pomegranate",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "red_bull",
+      "product_name": "Red Bull Energy Drink",
+      "brand": "Red Bull",
+      "category": "Energy Drinks",
+      "text": "Red Bull Energy Drink",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "red_bull",
+      "product_name": "Red Bull Energy Drink",
+      "brand": "Red Bull",
+      "category": "Energy Drinks",
+      "text": "Red Bull",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "red_bull",
+      "product_name": "Red Bull Energy Drink",
+      "brand": "Red Bull",
+      "category": "Energy Drinks",
+      "text": "RedBull",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "red_bull",
+      "product_name": "Red Bull Energy Drink",
+      "brand": "Red Bull",
+      "category": "Energy Drinks",
+      "text": "Red Bull Energy Drink | Red Bull | Energy Drinks | Red Bull Energy Drink | Red Bull | RedBull",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Monster Energy Zero Ultra",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Monster",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Monster Energy",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Monster Zero Ultra",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Zero Ultra",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "monster_zero_ultra",
+      "product_name": "Monster Energy Zero Ultra",
+      "brand": "Monster",
+      "category": "Energy Drinks",
+      "text": "Monster Energy Zero Ultra | Monster | Energy Drinks | Monster Energy Zero Ultra | Monster | Monster Energy | Monster Zero Ultra | Zero Ultra",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "bru_gold",
+      "product_name": "BRU Gold Coffee",
+      "brand": "BRU",
+      "category": "Coffee",
+      "text": "BRU Gold Coffee",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "bru_gold",
+      "product_name": "BRU Gold Coffee",
+      "brand": "BRU",
+      "category": "Coffee",
+      "text": "BRU",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "bru_gold",
+      "product_name": "BRU Gold Coffee",
+      "brand": "BRU",
+      "category": "Coffee",
+      "text": "BRU Gold",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bru_gold",
+      "product_name": "BRU Gold Coffee",
+      "brand": "BRU",
+      "category": "Coffee",
+      "text": "BRU Gold Edition",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bru_gold",
+      "product_name": "BRU Gold Coffee",
+      "brand": "BRU",
+      "category": "Coffee",
+      "text": "BRU Gold Coffee | BRU | Coffee | BRU Gold Coffee | BRU | BRU Gold | BRU Gold Edition",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Nescafe Classic Coffee",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Nescafe",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Nescafe Classic",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Nescafe Instant Coffee",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Instant Coffee",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nescafe_classic",
+      "product_name": "Nescafe Classic Coffee",
+      "brand": "Nescafe",
+      "category": "Coffee",
+      "text": "Nescafe Classic Coffee | Nescafe | Coffee | Nescafe Classic Coffee | Nescafe | Nescafe Classic | Nescafe Instant Coffee | Instant Coffee",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "brooke_bond_taj_mahal",
+      "product_name": "Brooke Bond Taj Mahal Tea",
+      "brand": "Brooke Bond",
+      "category": "Tea",
+      "text": "Brooke Bond Taj Mahal Tea",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "brooke_bond_taj_mahal",
+      "product_name": "Brooke Bond Taj Mahal Tea",
+      "brand": "Brooke Bond",
+      "category": "Tea",
+      "text": "Brooke Bond",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "brooke_bond_taj_mahal",
+      "product_name": "Brooke Bond Taj Mahal Tea",
+      "brand": "Brooke Bond",
+      "category": "Tea",
+      "text": "Taj Mahal Tea",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "brooke_bond_taj_mahal",
+      "product_name": "Brooke Bond Taj Mahal Tea",
+      "brand": "Brooke Bond",
+      "category": "Tea",
+      "text": "Brooke Bond Taj Mahal",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "brooke_bond_taj_mahal",
+      "product_name": "Brooke Bond Taj Mahal Tea",
+      "brand": "Brooke Bond",
+      "category": "Tea",
+      "text": "Brooke Bond Taj Mahal Tea | Brooke Bond | Tea | Brooke Bond Taj Mahal Tea | Brooke Bond | Taj Mahal Tea | Brooke Bond Taj Mahal",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "tata_tea_gold",
+      "product_name": "Tata Tea Gold",
+      "brand": "Tata Tea",
+      "category": "Tea",
+      "text": "Tata Tea Gold",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "tata_tea_gold",
+      "product_name": "Tata Tea Gold",
+      "brand": "Tata Tea",
+      "category": "Tea",
+      "text": "Tata Tea",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "tata_tea_gold",
+      "product_name": "Tata Tea Gold",
+      "brand": "Tata Tea",
+      "category": "Tea",
+      "text": "Tata Gold",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "tata_tea_gold",
+      "product_name": "Tata Tea Gold",
+      "brand": "Tata Tea",
+      "category": "Tea",
+      "text": "Tata Tea Gold Tea",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "tata_tea_gold",
+      "product_name": "Tata Tea Gold",
+      "brand": "Tata Tea",
+      "category": "Tea",
+      "text": "Tata Tea Gold | Tata Tea | Tea | Tata Tea Gold | Tata Tea | Tata Gold | Tata Tea Gold Tea",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "lipton_green_tea",
+      "product_name": "Lipton Green Tea",
+      "brand": "Lipton",
+      "category": "Tea",
+      "text": "Lipton Green Tea",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "lipton_green_tea",
+      "product_name": "Lipton Green Tea",
+      "brand": "Lipton",
+      "category": "Tea",
+      "text": "Lipton",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "lipton_green_tea",
+      "product_name": "Lipton Green Tea",
+      "brand": "Lipton",
+      "category": "Tea",
+      "text": "Green Tea",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lipton_green_tea",
+      "product_name": "Lipton Green Tea",
+      "brand": "Lipton",
+      "category": "Tea",
+      "text": "Lipton Green Tea | Lipton | Tea | Lipton Green Tea | Lipton | Green Tea",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "twinings_green_tea",
+      "product_name": "Twinings Pure Green Tea",
+      "brand": "Twinings",
+      "category": "Tea",
+      "text": "Twinings Pure Green Tea",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "twinings_green_tea",
+      "product_name": "Twinings Pure Green Tea",
+      "brand": "Twinings",
+      "category": "Tea",
+      "text": "Twinings",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "twinings_green_tea",
+      "product_name": "Twinings Pure Green Tea",
+      "brand": "Twinings",
+      "category": "Tea",
+      "text": "Twinings Green Tea",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "twinings_green_tea",
+      "product_name": "Twinings Pure Green Tea",
+      "brand": "Twinings",
+      "category": "Tea",
+      "text": "Green Tea",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "twinings_green_tea",
+      "product_name": "Twinings Pure Green Tea",
+      "brand": "Twinings",
+      "category": "Tea",
+      "text": "Twinings Pure Green Tea | Twinings | Tea | Twinings Pure Green Tea | Twinings | Twinings Green Tea | Green Tea",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "amul_tulsi_doodh",
+      "product_name": "Amul Tulsi Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul Tulsi Doodh",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "amul_tulsi_doodh",
+      "product_name": "Amul Tulsi Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "amul_tulsi_doodh",
+      "product_name": "Amul Tulsi Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Tulsi Doodh",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_tulsi_doodh",
+      "product_name": "Amul Tulsi Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul Tulsi Doodh | Amul | Flavoured Milk | Amul Tulsi Doodh | Amul | Tulsi Doodh",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "amul_ginger_doodh",
+      "product_name": "Amul Ginger Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul Ginger Doodh",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "amul_ginger_doodh",
+      "product_name": "Amul Ginger Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "amul_ginger_doodh",
+      "product_name": "Amul Ginger Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Ginger Doodh",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_ginger_doodh",
+      "product_name": "Amul Ginger Doodh",
+      "brand": "Amul",
+      "category": "Flavoured Milk",
+      "text": "Amul Ginger Doodh | Amul | Flavoured Milk | Amul Ginger Doodh | Amul | Ginger Doodh",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "heinz_ketchup",
+      "product_name": "Heinz Tomato Ketchup",
+      "brand": "Heinz",
+      "category": "Ketchup & Sauces",
+      "text": "Heinz Tomato Ketchup",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "heinz_ketchup",
+      "product_name": "Heinz Tomato Ketchup",
+      "brand": "Heinz",
+      "category": "Ketchup & Sauces",
+      "text": "Heinz",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "heinz_ketchup",
+      "product_name": "Heinz Tomato Ketchup",
+      "brand": "Heinz",
+      "category": "Ketchup & Sauces",
+      "text": "Heinz Ketchup",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "heinz_ketchup",
+      "product_name": "Heinz Tomato Ketchup",
+      "brand": "Heinz",
+      "category": "Ketchup & Sauces",
+      "text": "Tomato Ketchup",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "heinz_ketchup",
+      "product_name": "Heinz Tomato Ketchup",
+      "brand": "Heinz",
+      "category": "Ketchup & Sauces",
+      "text": "Heinz Tomato Ketchup | Heinz | Ketchup & Sauces | Heinz Tomato Ketchup | Heinz | Heinz Ketchup | Tomato Ketchup",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "kissan_mixed_fruit_jam",
+      "product_name": "Kissan Mixed Fruit Jam",
+      "brand": "Kissan",
+      "category": "Jam & Spreads",
+      "text": "Kissan Mixed Fruit Jam",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "kissan_mixed_fruit_jam",
+      "product_name": "Kissan Mixed Fruit Jam",
+      "brand": "Kissan",
+      "category": "Jam & Spreads",
+      "text": "Kissan",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "kissan_mixed_fruit_jam",
+      "product_name": "Kissan Mixed Fruit Jam",
+      "brand": "Kissan",
+      "category": "Jam & Spreads",
+      "text": "Kissan Jam",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kissan_mixed_fruit_jam",
+      "product_name": "Kissan Mixed Fruit Jam",
+      "brand": "Kissan",
+      "category": "Jam & Spreads",
+      "text": "Mixed Fruit Jam",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kissan_mixed_fruit_jam",
+      "product_name": "Kissan Mixed Fruit Jam",
+      "brand": "Kissan",
+      "category": "Jam & Spreads",
+      "text": "Kissan Mixed Fruit Jam | Kissan | Jam & Spreads | Kissan Mixed Fruit Jam | Kissan | Kissan Jam | Mixed Fruit Jam",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "mothers_mixed_pickle",
+      "product_name": "Mother's Mixed Pickle",
+      "brand": "Mother's",
+      "category": "Pickles",
+      "text": "Mother's Mixed Pickle",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "mothers_mixed_pickle",
+      "product_name": "Mother's Mixed Pickle",
+      "brand": "Mother's",
+      "category": "Pickles",
+      "text": "Mother's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "mothers_mixed_pickle",
+      "product_name": "Mother's Mixed Pickle",
+      "brand": "Mother's",
+      "category": "Pickles",
+      "text": "Mothers Mixed Pickle",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mothers_mixed_pickle",
+      "product_name": "Mother's Mixed Pickle",
+      "brand": "Mother's",
+      "category": "Pickles",
+      "text": "Mixed Pickle",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mothers_mixed_pickle",
+      "product_name": "Mother's Mixed Pickle",
+      "brand": "Mother's",
+      "category": "Pickles",
+      "text": "Mother's Mixed Pickle | Mother's | Pickles | Mother's Mixed Pickle | Mother's | Mothers Mixed Pickle | Mixed Pickle",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "center_fresh",
+      "product_name": "Center Fresh Gum",
+      "brand": "Center Fresh",
+      "category": "Gum",
+      "text": "Center Fresh Gum",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "center_fresh",
+      "product_name": "Center Fresh Gum",
+      "brand": "Center Fresh",
+      "category": "Gum",
+      "text": "Center Fresh",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "center_fresh",
+      "product_name": "Center Fresh Gum",
+      "brand": "Center Fresh",
+      "category": "Gum",
+      "text": "Centerfresh",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "center_fresh",
+      "product_name": "Center Fresh Gum",
+      "brand": "Center Fresh",
+      "category": "Gum",
+      "text": "Centerfresh Gum",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "center_fresh",
+      "product_name": "Center Fresh Gum",
+      "brand": "Center Fresh",
+      "category": "Gum",
+      "text": "Center Fresh Gum | Center Fresh | Gum | Center Fresh Gum | Center Fresh | Centerfresh | Centerfresh Gum",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "center_fruit",
+      "product_name": "Center Fruit Gum",
+      "brand": "Center Fruit",
+      "category": "Gum",
+      "text": "Center Fruit Gum",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "center_fruit",
+      "product_name": "Center Fruit Gum",
+      "brand": "Center Fruit",
+      "category": "Gum",
+      "text": "Center Fruit",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "center_fruit",
+      "product_name": "Center Fruit Gum",
+      "brand": "Center Fruit",
+      "category": "Gum",
+      "text": "Centerfruit",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "center_fruit",
+      "product_name": "Center Fruit Gum",
+      "brand": "Center Fruit",
+      "category": "Gum",
+      "text": "Centerfruit Gum",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "center_fruit",
+      "product_name": "Center Fruit Gum",
+      "brand": "Center Fruit",
+      "category": "Gum",
+      "text": "Center Fruit Gum | Center Fruit | Gum | Center Fruit Gum | Center Fruit | Centerfruit | Centerfruit Gum",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "happydent",
+      "product_name": "Happydent Gum",
+      "brand": "Happydent",
+      "category": "Gum",
+      "text": "Happydent Gum",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "happydent",
+      "product_name": "Happydent Gum",
+      "brand": "Happydent",
+      "category": "Gum",
+      "text": "Happydent",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "happydent",
+      "product_name": "Happydent Gum",
+      "brand": "Happydent",
+      "category": "Gum",
+      "text": "Happydent Gum | Happydent | Gum | Happydent Gum | Happydent",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "mentos_gum",
+      "product_name": "Mentos Gum",
+      "brand": "Mentos",
+      "category": "Gum",
+      "text": "Mentos Gum",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "mentos_gum",
+      "product_name": "Mentos Gum",
+      "brand": "Mentos",
+      "category": "Gum",
+      "text": "Mentos",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "mentos_gum",
+      "product_name": "Mentos Gum",
+      "brand": "Mentos",
+      "category": "Gum",
+      "text": "Mentos Gum | Mentos | Gum | Mentos Gum | Mentos",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Pulse Kachcha Aam Candy",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Pulse",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Pulse Candy",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Pulse Kachcha Aam",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Kachcha Aam",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "pulse_kachcha_aam",
+      "product_name": "Pulse Kachcha Aam Candy",
+      "brand": "Pulse",
+      "category": "Candy",
+      "text": "Pulse Kachcha Aam Candy | Pulse | Candy | Pulse Kachcha Aam Candy | Pulse | Pulse Candy | Pulse Kachcha Aam | Kachcha Aam",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "quaker_oats",
+      "product_name": "Quaker Oats",
+      "brand": "Quaker",
+      "category": "Oats & Cereals",
+      "text": "Quaker Oats",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "quaker_oats",
+      "product_name": "Quaker Oats",
+      "brand": "Quaker",
+      "category": "Oats & Cereals",
+      "text": "Quaker",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "quaker_oats",
+      "product_name": "Quaker Oats",
+      "brand": "Quaker",
+      "category": "Oats & Cereals",
+      "text": "Quaker Oats 100% Whole Grain",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "quaker_oats",
+      "product_name": "Quaker Oats",
+      "brand": "Quaker",
+      "category": "Oats & Cereals",
+      "text": "Quaker Oats | Quaker | Oats & Cereals | Quaker Oats | Quaker | Quaker Oats 100% Whole Grain",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "bagrrys_oats",
+      "product_name": "Bagrry's Oats",
+      "brand": "Bagrry's",
+      "category": "Oats & Cereals",
+      "text": "Bagrry's Oats",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "bagrrys_oats",
+      "product_name": "Bagrry's Oats",
+      "brand": "Bagrry's",
+      "category": "Oats & Cereals",
+      "text": "Bagrry's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "bagrrys_oats",
+      "product_name": "Bagrry's Oats",
+      "brand": "Bagrry's",
+      "category": "Oats & Cereals",
+      "text": "Bagrrys",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bagrrys_oats",
+      "product_name": "Bagrry's Oats",
+      "brand": "Bagrry's",
+      "category": "Oats & Cereals",
+      "text": "Bagrrys Oats",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bagrrys_oats",
+      "product_name": "Bagrry's Oats",
+      "brand": "Bagrry's",
+      "category": "Oats & Cereals",
+      "text": "Bagrry's Oats | Bagrry's | Oats & Cereals | Bagrry's Oats | Bagrry's | Bagrrys | Bagrrys Oats",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "soulfull_ragi_bites",
+      "product_name": "Soulfull Ragi Bites",
+      "brand": "Soulfull",
+      "category": "Breakfast Cereal",
+      "text": "Soulfull Ragi Bites",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "soulfull_ragi_bites",
+      "product_name": "Soulfull Ragi Bites",
+      "brand": "Soulfull",
+      "category": "Breakfast Cereal",
+      "text": "Soulfull",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "soulfull_ragi_bites",
+      "product_name": "Soulfull Ragi Bites",
+      "brand": "Soulfull",
+      "category": "Breakfast Cereal",
+      "text": "Ragi Bites",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "soulfull_ragi_bites",
+      "product_name": "Soulfull Ragi Bites",
+      "brand": "Soulfull",
+      "category": "Breakfast Cereal",
+      "text": "Soulfull Ragi Bites | Soulfull | Breakfast Cereal | Soulfull Ragi Bites | Soulfull | Ragi Bites",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "mtr_buttermilk_masala",
+      "product_name": "MTR Buttermilk Masala",
+      "brand": "MTR",
+      "category": "Spice Mix",
+      "text": "MTR Buttermilk Masala",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "mtr_buttermilk_masala",
+      "product_name": "MTR Buttermilk Masala",
+      "brand": "MTR",
+      "category": "Spice Mix",
+      "text": "MTR",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "mtr_buttermilk_masala",
+      "product_name": "MTR Buttermilk Masala",
+      "brand": "MTR",
+      "category": "Spice Mix",
+      "text": "MTR Butter Milk Masala",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mtr_buttermilk_masala",
+      "product_name": "MTR Buttermilk Masala",
+      "brand": "MTR",
+      "category": "Spice Mix",
+      "text": "Buttermilk Masala",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "mtr_buttermilk_masala",
+      "product_name": "MTR Buttermilk Masala",
+      "brand": "MTR",
+      "category": "Spice Mix",
+      "text": "MTR Buttermilk Masala | MTR | Spice Mix | MTR Buttermilk Masala | MTR | MTR Butter Milk Masala | Buttermilk Masala",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "gits_vada_mix",
+      "product_name": "Gits Vada Mix",
+      "brand": "Gits",
+      "category": "Ready Mix",
+      "text": "Gits Vada Mix",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "gits_vada_mix",
+      "product_name": "Gits Vada Mix",
+      "brand": "Gits",
+      "category": "Ready Mix",
+      "text": "Gits",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "gits_vada_mix",
+      "product_name": "Gits Vada Mix",
+      "brand": "Gits",
+      "category": "Ready Mix",
+      "text": "Gits Vada",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "gits_vada_mix",
+      "product_name": "Gits Vada Mix",
+      "brand": "Gits",
+      "category": "Ready Mix",
+      "text": "Vada Mix",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "gits_vada_mix",
+      "product_name": "Gits Vada Mix",
+      "brand": "Gits",
+      "category": "Ready Mix",
+      "text": "Gits Vada Mix | Gits | Ready Mix | Gits Vada Mix | Gits | Gits Vada | Vada Mix",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hershey's Natural Unsweetened Cocoa",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hershey's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hersheys",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hershey's Cocoa",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hersheys Cocoa",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "hersheys_cocoa",
+      "product_name": "Hershey's Natural Unsweetened Cocoa",
+      "brand": "Hershey's",
+      "category": "Cocoa",
+      "text": "Hershey's Natural Unsweetened Cocoa | Hershey's | Cocoa | Hershey's Natural Unsweetened Cocoa | Hershey's | Hersheys | Hershey's Cocoa | Hersheys Cocoa",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jell-O Strawberry Gelatin",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jell-O",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jello",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jell-O Strawberry",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jello Strawberry",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Gelatin Mix",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "jello_strawberry",
+      "product_name": "Jell-O Strawberry Gelatin",
+      "brand": "Jell-O",
+      "category": "Dessert Mix",
+      "text": "Jell-O Strawberry Gelatin | Jell-O | Dessert Mix | Jell-O Strawberry Gelatin | Jell-O | Jello | Jell-O Strawberry | Jello Strawberry | Gelatin Mix",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Sunfeast Dark Fantasy",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Sunfeast",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Dark Fantasy",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Dark Fantasy Choco Fills",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Sunfeast Dark Fantasy Choco Fills",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "sunfeast_dark_fantasy",
+      "product_name": "Sunfeast Dark Fantasy",
+      "brand": "Sunfeast",
+      "category": "Biscuits & Cookies",
+      "text": "Sunfeast Dark Fantasy | Sunfeast | Biscuits & Cookies | Sunfeast Dark Fantasy | Sunfeast | Dark Fantasy | Dark Fantasy Choco Fills | Sunfeast Dark Fantasy Choco Fills",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "oreo_original",
+      "product_name": "Oreo Original Biscuits",
+      "brand": "Oreo",
+      "category": "Biscuits & Cookies",
+      "text": "Oreo Original Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "oreo_original",
+      "product_name": "Oreo Original Biscuits",
+      "brand": "Oreo",
+      "category": "Biscuits & Cookies",
+      "text": "Oreo",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "oreo_original",
+      "product_name": "Oreo Original Biscuits",
+      "brand": "Oreo",
+      "category": "Biscuits & Cookies",
+      "text": "Oreo Original",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "oreo_original",
+      "product_name": "Oreo Original Biscuits",
+      "brand": "Oreo",
+      "category": "Biscuits & Cookies",
+      "text": "Oreo Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "oreo_original",
+      "product_name": "Oreo Original Biscuits",
+      "brand": "Oreo",
+      "category": "Biscuits & Cookies",
+      "text": "Oreo Original Biscuits | Oreo | Biscuits & Cookies | Oreo Original Biscuits | Oreo | Oreo Original | Oreo Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "britannia_bourbon",
+      "product_name": "Britannia Bourbon Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Bourbon Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "britannia_bourbon",
+      "product_name": "Britannia Bourbon Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "britannia_bourbon",
+      "product_name": "Britannia Bourbon Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Bourbon",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_bourbon",
+      "product_name": "Britannia Bourbon Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Bourbon Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_bourbon",
+      "product_name": "Britannia Bourbon Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Bourbon Biscuits | Britannia | Biscuits & Cookies | Britannia Bourbon Biscuits | Britannia | Bourbon | Bourbon Biscuits",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "britannia_tiger",
+      "product_name": "Britannia Tiger Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Tiger Biscuits",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "britannia_tiger",
+      "product_name": "Britannia Tiger Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "britannia_tiger",
+      "product_name": "Britannia Tiger Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Tiger Biscuits",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_tiger",
+      "product_name": "Britannia Tiger Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Tiger Glucose",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "britannia_tiger",
+      "product_name": "Britannia Tiger Biscuits",
+      "brand": "Britannia",
+      "category": "Biscuits & Cookies",
+      "text": "Britannia Tiger Biscuits | Britannia | Biscuits & Cookies | Britannia Tiger Biscuits | Britannia | Tiger Biscuits | Tiger Glucose",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "Sunfeast YiPPee Magic Masala Noodles",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "Sunfeast YiPPee",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "Yippee",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "Yippee Magic Masala",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "YiPPee Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "yippee_magic_masala",
+      "product_name": "Sunfeast YiPPee Magic Masala Noodles",
+      "brand": "Sunfeast YiPPee",
+      "category": "Instant Noodles",
+      "text": "Sunfeast YiPPee Magic Masala Noodles | Sunfeast YiPPee | Instant Noodles | Sunfeast YiPPee Magic Masala Noodles | Sunfeast YiPPee | Yippee | Yippee Magic Masala | YiPPee Noodles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "top_ramen_curry",
+      "product_name": "Top Ramen Curry Noodles",
+      "brand": "Top Ramen",
+      "category": "Instant Noodles",
+      "text": "Top Ramen Curry Noodles",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "top_ramen_curry",
+      "product_name": "Top Ramen Curry Noodles",
+      "brand": "Top Ramen",
+      "category": "Instant Noodles",
+      "text": "Top Ramen",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "top_ramen_curry",
+      "product_name": "Top Ramen Curry Noodles",
+      "brand": "Top Ramen",
+      "category": "Instant Noodles",
+      "text": "Top Ramen Curry",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "top_ramen_curry",
+      "product_name": "Top Ramen Curry Noodles",
+      "brand": "Top Ramen",
+      "category": "Instant Noodles",
+      "text": "Curry Noodles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "top_ramen_curry",
+      "product_name": "Top Ramen Curry Noodles",
+      "brand": "Top Ramen",
+      "category": "Instant Noodles",
+      "text": "Top Ramen Curry Noodles | Top Ramen | Instant Noodles | Top Ramen Curry Noodles | Top Ramen | Top Ramen Curry | Curry Noodles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "kurkure_masala_munch",
+      "product_name": "Kurkure Masala Munch",
+      "brand": "Kurkure",
+      "category": "Snacks",
+      "text": "Kurkure Masala Munch",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "kurkure_masala_munch",
+      "product_name": "Kurkure Masala Munch",
+      "brand": "Kurkure",
+      "category": "Snacks",
+      "text": "Kurkure",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "kurkure_masala_munch",
+      "product_name": "Kurkure Masala Munch",
+      "brand": "Kurkure",
+      "category": "Snacks",
+      "text": "Masala Munch",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kurkure_masala_munch",
+      "product_name": "Kurkure Masala Munch",
+      "brand": "Kurkure",
+      "category": "Snacks",
+      "text": "Kurkure Masala Munch | Kurkure | Snacks | Kurkure Masala Munch | Kurkure | Masala Munch",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "bingo_mad_angles",
+      "product_name": "Bingo Mad Angles",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo Mad Angles",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "bingo_mad_angles",
+      "product_name": "Bingo Mad Angles",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "bingo_mad_angles",
+      "product_name": "Bingo Mad Angles",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Mad Angles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bingo_mad_angles",
+      "product_name": "Bingo Mad Angles",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo Mad Angles | Bingo | Snacks | Bingo Mad Angles | Bingo | Mad Angles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "bingo_tedhe_medhe",
+      "product_name": "Bingo Tedhe Medhe",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo Tedhe Medhe",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "bingo_tedhe_medhe",
+      "product_name": "Bingo Tedhe Medhe",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "bingo_tedhe_medhe",
+      "product_name": "Bingo Tedhe Medhe",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Tedhe Medhe",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bingo_tedhe_medhe",
+      "product_name": "Bingo Tedhe Medhe",
+      "brand": "Bingo",
+      "category": "Snacks",
+      "text": "Bingo Tedhe Medhe | Bingo | Snacks | Bingo Tedhe Medhe | Bingo | Tedhe Medhe",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "doritos_nacho_cheese",
+      "product_name": "Doritos Nacho Cheese",
+      "brand": "Doritos",
+      "category": "Chips",
+      "text": "Doritos Nacho Cheese",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "doritos_nacho_cheese",
+      "product_name": "Doritos Nacho Cheese",
+      "brand": "Doritos",
+      "category": "Chips",
+      "text": "Doritos",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "doritos_nacho_cheese",
+      "product_name": "Doritos Nacho Cheese",
+      "brand": "Doritos",
+      "category": "Chips",
+      "text": "Nacho Cheese",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "doritos_nacho_cheese",
+      "product_name": "Doritos Nacho Cheese",
+      "brand": "Doritos",
+      "category": "Chips",
+      "text": "Doritos Nacho Cheese | Doritos | Chips | Doritos Nacho Cheese | Doritos | Nacho Cheese",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "pringles_original",
+      "product_name": "Pringles Original",
+      "brand": "Pringles",
+      "category": "Chips",
+      "text": "Pringles Original",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "pringles_original",
+      "product_name": "Pringles Original",
+      "brand": "Pringles",
+      "category": "Chips",
+      "text": "Pringles",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "pringles_original",
+      "product_name": "Pringles Original",
+      "brand": "Pringles",
+      "category": "Chips",
+      "text": "Original Pringles",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "pringles_original",
+      "product_name": "Pringles Original",
+      "brand": "Pringles",
+      "category": "Chips",
+      "text": "Pringles Original | Pringles | Chips | Pringles Original | Pringles | Original Pringles",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "cadbury_dairy_milk",
+      "product_name": "Cadbury Dairy Milk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Dairy Milk",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "cadbury_dairy_milk",
+      "product_name": "Cadbury Dairy Milk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "cadbury_dairy_milk",
+      "product_name": "Cadbury Dairy Milk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Dairy Milk",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_dairy_milk",
+      "product_name": "Cadbury Dairy Milk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Dairy Milk Chocolate",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_dairy_milk",
+      "product_name": "Cadbury Dairy Milk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Dairy Milk | Cadbury | Chocolate | Cadbury Dairy Milk | Cadbury | Dairy Milk | Cadbury Dairy Milk Chocolate",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury 5 Star",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "5 Star",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Five Star",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Five Star",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_5_star",
+      "product_name": "Cadbury 5 Star",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury 5 Star | Cadbury | Chocolate | Cadbury 5 Star | Cadbury | 5 Star | Five Star | Cadbury Five Star",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle KitKat",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "KitKat",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Kit Kat",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle Kit Kat",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nestle_kitkat",
+      "product_name": "Nestle KitKat",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle KitKat | Nestle | Chocolate | Nestle KitKat | Nestle | KitKat | Kit Kat | Nestle Kit Kat",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "nestle_munch",
+      "product_name": "Nestle Munch",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle Munch",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "nestle_munch",
+      "product_name": "Nestle Munch",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "nestle_munch",
+      "product_name": "Nestle Munch",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Munch",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "nestle_munch",
+      "product_name": "Nestle Munch",
+      "brand": "Nestle",
+      "category": "Chocolate",
+      "text": "Nestle Munch | Nestle | Chocolate | Nestle Munch | Nestle | Munch",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "cadbury_perk",
+      "product_name": "Cadbury Perk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Perk",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "cadbury_perk",
+      "product_name": "Cadbury Perk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "cadbury_perk",
+      "product_name": "Cadbury Perk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Perk",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "cadbury_perk",
+      "product_name": "Cadbury Perk",
+      "brand": "Cadbury",
+      "category": "Chocolate",
+      "text": "Cadbury Perk | Cadbury | Chocolate | Cadbury Perk | Cadbury | Perk",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "haldirams_aloo_bhujia",
+      "product_name": "Haldiram's Aloo Bhujia",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Aloo Bhujia",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "haldirams_aloo_bhujia",
+      "product_name": "Haldiram's Aloo Bhujia",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "haldirams_aloo_bhujia",
+      "product_name": "Haldiram's Aloo Bhujia",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram Aloo Bhujia",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_aloo_bhujia",
+      "product_name": "Haldiram's Aloo Bhujia",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Aloo Bhujia",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_aloo_bhujia",
+      "product_name": "Haldiram's Aloo Bhujia",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Aloo Bhujia | Haldiram's | Namkeen & Snacks | Haldiram's Aloo Bhujia | Haldiram's | Haldiram Aloo Bhujia | Aloo Bhujia",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "haldirams_bhujia_sev",
+      "product_name": "Haldiram's Bhujia Sev",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Bhujia Sev",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "haldirams_bhujia_sev",
+      "product_name": "Haldiram's Bhujia Sev",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "haldirams_bhujia_sev",
+      "product_name": "Haldiram's Bhujia Sev",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram Bhujia",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_bhujia_sev",
+      "product_name": "Haldiram's Bhujia Sev",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Bhujia Sev",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "haldirams_bhujia_sev",
+      "product_name": "Haldiram's Bhujia Sev",
+      "brand": "Haldiram's",
+      "category": "Namkeen & Snacks",
+      "text": "Haldiram's Bhujia Sev | Haldiram's | Namkeen & Snacks | Haldiram's Bhujia Sev | Haldiram's | Haldiram Bhujia | Bhujia Sev",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's Corn Flakes",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kelloggs",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Corn Flakes",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kelloggs Corn Flakes",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kelloggs_corn_flakes",
+      "product_name": "Kellogg's Corn Flakes",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's Corn Flakes | Kellogg's | Breakfast Cereal | Kellogg's Corn Flakes | Kellogg's | Kelloggs | Corn Flakes | Kelloggs Corn Flakes",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "kelloggs_chocos",
+      "product_name": "Kellogg's Chocos",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's Chocos",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "kelloggs_chocos",
+      "product_name": "Kellogg's Chocos",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "kelloggs_chocos",
+      "product_name": "Kellogg's Chocos",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kelloggs Chocos",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kelloggs_chocos",
+      "product_name": "Kellogg's Chocos",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Chocos",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "kelloggs_chocos",
+      "product_name": "Kellogg's Chocos",
+      "brand": "Kellogg's",
+      "category": "Breakfast Cereal",
+      "text": "Kellogg's Chocos | Kellogg's | Breakfast Cereal | Kellogg's Chocos | Kellogg's | Kelloggs Chocos | Chocos",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "horlicks_classic",
+      "product_name": "Horlicks Classic Malt",
+      "brand": "Horlicks",
+      "category": "Health Drink",
+      "text": "Horlicks Classic Malt",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "horlicks_classic",
+      "product_name": "Horlicks Classic Malt",
+      "brand": "Horlicks",
+      "category": "Health Drink",
+      "text": "Horlicks",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "horlicks_classic",
+      "product_name": "Horlicks Classic Malt",
+      "brand": "Horlicks",
+      "category": "Health Drink",
+      "text": "Classic Malt",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "horlicks_classic",
+      "product_name": "Horlicks Classic Malt",
+      "brand": "Horlicks",
+      "category": "Health Drink",
+      "text": "Horlicks Classic Malt | Horlicks | Health Drink | Horlicks Classic Malt | Horlicks | Classic Malt",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "boost_health_drink",
+      "product_name": "Boost Health Drink",
+      "brand": "Boost",
+      "category": "Health Drink",
+      "text": "Boost Health Drink",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "boost_health_drink",
+      "product_name": "Boost Health Drink",
+      "brand": "Boost",
+      "category": "Health Drink",
+      "text": "Boost",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "boost_health_drink",
+      "product_name": "Boost Health Drink",
+      "brand": "Boost",
+      "category": "Health Drink",
+      "text": "Boost Health Drink | Boost | Health Drink | Boost Health Drink | Boost",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "bournvita",
+      "product_name": "Cadbury Bournvita",
+      "brand": "Cadbury",
+      "category": "Health Drink",
+      "text": "Cadbury Bournvita",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "bournvita",
+      "product_name": "Cadbury Bournvita",
+      "brand": "Cadbury",
+      "category": "Health Drink",
+      "text": "Cadbury",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "bournvita",
+      "product_name": "Cadbury Bournvita",
+      "brand": "Cadbury",
+      "category": "Health Drink",
+      "text": "Bournvita",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "bournvita",
+      "product_name": "Cadbury Bournvita",
+      "brand": "Cadbury",
+      "category": "Health Drink",
+      "text": "Cadbury Bournvita | Cadbury | Health Drink | Cadbury Bournvita | Cadbury | Bournvita",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "complan_royale_chocolate",
+      "product_name": "Complan Royale Chocolate",
+      "brand": "Complan",
+      "category": "Health Drink",
+      "text": "Complan Royale Chocolate",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "complan_royale_chocolate",
+      "product_name": "Complan Royale Chocolate",
+      "brand": "Complan",
+      "category": "Health Drink",
+      "text": "Complan",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "complan_royale_chocolate",
+      "product_name": "Complan Royale Chocolate",
+      "brand": "Complan",
+      "category": "Health Drink",
+      "text": "Royale Chocolate",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "complan_royale_chocolate",
+      "product_name": "Complan Royale Chocolate",
+      "brand": "Complan",
+      "category": "Health Drink",
+      "text": "Complan Royale Chocolate | Complan | Health Drink | Complan Royale Chocolate | Complan | Royale Chocolate",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "dabur_honey",
+      "product_name": "Dabur Honey",
+      "brand": "Dabur",
+      "category": "Honey",
+      "text": "Dabur Honey",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "dabur_honey",
+      "product_name": "Dabur Honey",
+      "brand": "Dabur",
+      "category": "Honey",
+      "text": "Dabur",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "dabur_honey",
+      "product_name": "Dabur Honey",
+      "brand": "Dabur",
+      "category": "Honey",
+      "text": "Honey",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "dabur_honey",
+      "product_name": "Dabur Honey",
+      "brand": "Dabur",
+      "category": "Honey",
+      "text": "Dabur Honey | Dabur | Honey | Dabur Honey | Dabur | Honey",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "saffola_oats",
+      "product_name": "Saffola Oats",
+      "brand": "Saffola",
+      "category": "Oats & Cereals",
+      "text": "Saffola Oats",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "saffola_oats",
+      "product_name": "Saffola Oats",
+      "brand": "Saffola",
+      "category": "Oats & Cereals",
+      "text": "Saffola",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "saffola_oats",
+      "product_name": "Saffola Oats",
+      "brand": "Saffola",
+      "category": "Oats & Cereals",
+      "text": "Saffola Oats | Saffola | Oats & Cereals | Saffola Oats | Saffola",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "fortune_sunlite",
+      "product_name": "Fortune Sunlite Refined Sunflower Oil",
+      "brand": "Fortune",
+      "category": "Cooking Oil",
+      "text": "Fortune Sunlite Refined Sunflower Oil",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "fortune_sunlite",
+      "product_name": "Fortune Sunlite Refined Sunflower Oil",
+      "brand": "Fortune",
+      "category": "Cooking Oil",
+      "text": "Fortune",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "fortune_sunlite",
+      "product_name": "Fortune Sunlite Refined Sunflower Oil",
+      "brand": "Fortune",
+      "category": "Cooking Oil",
+      "text": "Fortune Sunlite",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "fortune_sunlite",
+      "product_name": "Fortune Sunlite Refined Sunflower Oil",
+      "brand": "Fortune",
+      "category": "Cooking Oil",
+      "text": "Fortune Sunflower Oil",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "fortune_sunlite",
+      "product_name": "Fortune Sunlite Refined Sunflower Oil",
+      "brand": "Fortune",
+      "category": "Cooking Oil",
+      "text": "Fortune Sunlite Refined Sunflower Oil | Fortune | Cooking Oil | Fortune Sunlite Refined Sunflower Oil | Fortune | Fortune Sunlite | Fortune Sunflower Oil",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "surf_excel_matic",
+      "product_name": "Surf Excel Matic",
+      "brand": "Surf Excel",
+      "category": "Laundry Detergent",
+      "text": "Surf Excel Matic",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "surf_excel_matic",
+      "product_name": "Surf Excel Matic",
+      "brand": "Surf Excel",
+      "category": "Laundry Detergent",
+      "text": "Surf Excel",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "surf_excel_matic",
+      "product_name": "Surf Excel Matic",
+      "brand": "Surf Excel",
+      "category": "Laundry Detergent",
+      "text": "Surf Excel Matic Detergent",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "surf_excel_matic",
+      "product_name": "Surf Excel Matic",
+      "brand": "Surf Excel",
+      "category": "Laundry Detergent",
+      "text": "Surf Excel Matic | Surf Excel | Laundry Detergent | Surf Excel Matic | Surf Excel | Surf Excel Matic Detergent",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "tide_plus",
+      "product_name": "Tide Plus",
+      "brand": "Tide",
+      "category": "Laundry Detergent",
+      "text": "Tide Plus",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "tide_plus",
+      "product_name": "Tide Plus",
+      "brand": "Tide",
+      "category": "Laundry Detergent",
+      "text": "Tide",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "tide_plus",
+      "product_name": "Tide Plus",
+      "brand": "Tide",
+      "category": "Laundry Detergent",
+      "text": "Tide Detergent",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "tide_plus",
+      "product_name": "Tide Plus",
+      "brand": "Tide",
+      "category": "Laundry Detergent",
+      "text": "Tide Plus | Tide | Laundry Detergent | Tide Plus | Tide | Tide Detergent",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "vim_bar",
+      "product_name": "Vim Dishwash Bar",
+      "brand": "Vim",
+      "category": "Dishwashing",
+      "text": "Vim Dishwash Bar",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "vim_bar",
+      "product_name": "Vim Dishwash Bar",
+      "brand": "Vim",
+      "category": "Dishwashing",
+      "text": "Vim",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "vim_bar",
+      "product_name": "Vim Dishwash Bar",
+      "brand": "Vim",
+      "category": "Dishwashing",
+      "text": "Vim Bar",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "vim_bar",
+      "product_name": "Vim Dishwash Bar",
+      "brand": "Vim",
+      "category": "Dishwashing",
+      "text": "Vim Dishwash Bar | Vim | Dishwashing | Vim Dishwash Bar | Vim | Vim Bar",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "dettol_original_soap",
+      "product_name": "Dettol Original Soap",
+      "brand": "Dettol",
+      "category": "Personal Hygiene",
+      "text": "Dettol Original Soap",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "dettol_original_soap",
+      "product_name": "Dettol Original Soap",
+      "brand": "Dettol",
+      "category": "Personal Hygiene",
+      "text": "Dettol",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "dettol_original_soap",
+      "product_name": "Dettol Original Soap",
+      "brand": "Dettol",
+      "category": "Personal Hygiene",
+      "text": "Dettol Original",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "dettol_original_soap",
+      "product_name": "Dettol Original Soap",
+      "brand": "Dettol",
+      "category": "Personal Hygiene",
+      "text": "Dettol Soap",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "dettol_original_soap",
+      "product_name": "Dettol Original Soap",
+      "brand": "Dettol",
+      "category": "Personal Hygiene",
+      "text": "Dettol Original Soap | Dettol | Personal Hygiene | Dettol Original Soap | Dettol | Dettol Original | Dettol Soap",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "lifebuoy_total",
+      "product_name": "Lifebuoy Total Soap",
+      "brand": "Lifebuoy",
+      "category": "Personal Hygiene",
+      "text": "Lifebuoy Total Soap",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "lifebuoy_total",
+      "product_name": "Lifebuoy Total Soap",
+      "brand": "Lifebuoy",
+      "category": "Personal Hygiene",
+      "text": "Lifebuoy",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "lifebuoy_total",
+      "product_name": "Lifebuoy Total Soap",
+      "brand": "Lifebuoy",
+      "category": "Personal Hygiene",
+      "text": "Lifebuoy Total",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lifebuoy_total",
+      "product_name": "Lifebuoy Total Soap",
+      "brand": "Lifebuoy",
+      "category": "Personal Hygiene",
+      "text": "Lifebuoy Soap",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "lifebuoy_total",
+      "product_name": "Lifebuoy Total Soap",
+      "brand": "Lifebuoy",
+      "category": "Personal Hygiene",
+      "text": "Lifebuoy Total Soap | Lifebuoy | Personal Hygiene | Lifebuoy Total Soap | Lifebuoy | Lifebuoy Total | Lifebuoy Soap",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "colgate_strong_teeth",
+      "product_name": "Colgate Strong Teeth Toothpaste",
+      "brand": "Colgate",
+      "category": "Oral Care",
+      "text": "Colgate Strong Teeth Toothpaste",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "colgate_strong_teeth",
+      "product_name": "Colgate Strong Teeth Toothpaste",
+      "brand": "Colgate",
+      "category": "Oral Care",
+      "text": "Colgate",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "colgate_strong_teeth",
+      "product_name": "Colgate Strong Teeth Toothpaste",
+      "brand": "Colgate",
+      "category": "Oral Care",
+      "text": "Colgate Strong Teeth",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "colgate_strong_teeth",
+      "product_name": "Colgate Strong Teeth Toothpaste",
+      "brand": "Colgate",
+      "category": "Oral Care",
+      "text": "Strong Teeth",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "colgate_strong_teeth",
+      "product_name": "Colgate Strong Teeth Toothpaste",
+      "brand": "Colgate",
+      "category": "Oral Care",
+      "text": "Colgate Strong Teeth Toothpaste | Colgate | Oral Care | Colgate Strong Teeth Toothpaste | Colgate | Colgate Strong Teeth | Strong Teeth",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "pepsodent_germicheck",
+      "product_name": "Pepsodent Germicheck Toothpaste",
+      "brand": "Pepsodent",
+      "category": "Oral Care",
+      "text": "Pepsodent Germicheck Toothpaste",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "pepsodent_germicheck",
+      "product_name": "Pepsodent Germicheck Toothpaste",
+      "brand": "Pepsodent",
+      "category": "Oral Care",
+      "text": "Pepsodent",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "pepsodent_germicheck",
+      "product_name": "Pepsodent Germicheck Toothpaste",
+      "brand": "Pepsodent",
+      "category": "Oral Care",
+      "text": "Germicheck",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "pepsodent_germicheck",
+      "product_name": "Pepsodent Germicheck Toothpaste",
+      "brand": "Pepsodent",
+      "category": "Oral Care",
+      "text": "Pepsodent Germicheck Toothpaste | Pepsodent | Oral Care | Pepsodent Germicheck Toothpaste | Pepsodent | Germicheck",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "amul_butter",
+      "product_name": "Amul Butter",
+      "brand": "Amul",
+      "category": "Butter",
+      "text": "Amul Butter",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "amul_butter",
+      "product_name": "Amul Butter",
+      "brand": "Amul",
+      "category": "Butter",
+      "text": "Amul",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "amul_butter",
+      "product_name": "Amul Butter",
+      "brand": "Amul",
+      "category": "Butter",
+      "text": "Amul Pasteurised Butter",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_butter",
+      "product_name": "Amul Butter",
+      "brand": "Amul",
+      "category": "Butter",
+      "text": "Amul Salted Butter",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_butter",
+      "product_name": "Amul Butter",
+      "brand": "Amul",
+      "category": "Butter",
+      "text": "Amul Butter | Amul | Butter | Amul Butter | Amul | Amul Pasteurised Butter | Amul Salted Butter",
+      "variant_type": "search_text"
+    },
+    {
+      "product_id": "amul_cheese_slices",
+      "product_name": "Amul Cheese Slices",
+      "brand": "Amul",
+      "category": "Cheese",
+      "text": "Amul Cheese Slices",
+      "variant_type": "name"
+    },
+    {
+      "product_id": "amul_cheese_slices",
+      "product_name": "Amul Cheese Slices",
+      "brand": "Amul",
+      "category": "Cheese",
+      "text": "Amul",
+      "variant_type": "brand"
+    },
+    {
+      "product_id": "amul_cheese_slices",
+      "product_name": "Amul Cheese Slices",
+      "brand": "Amul",
+      "category": "Cheese",
+      "text": "Amul Cheese",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_cheese_slices",
+      "product_name": "Amul Cheese Slices",
+      "brand": "Amul",
+      "category": "Cheese",
+      "text": "Cheese Slices",
+      "variant_type": "alias"
+    },
+    {
+      "product_id": "amul_cheese_slices",
+      "product_name": "Amul Cheese Slices",
+      "brand": "Amul",
+      "category": "Cheese",
+      "text": "Amul Cheese Slices | Amul | Cheese | Amul Cheese Slices | Amul | Amul Cheese | Cheese Slices",
+      "variant_type": "search_text"
+    }
+  ]
 }

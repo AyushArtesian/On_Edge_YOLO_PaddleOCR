@@ -2,6 +2,7 @@ package com.example.yolo_paddle_poc
 
 import android.content.Context
 import android.util.Log
+import org.json.JSONObject
 import java.util.Locale
 import kotlin.math.max
 
@@ -10,56 +11,170 @@ class ProductMatcher(
 ) {
 
     companion object {
-        private const val TAG =
-            "PRODUCT_MATCHER"
+        private const val TAG = "PRODUCT_MATCHER"
 
-        private const val PRODUCTS_ASSET =
-            "products.txt"
+        /*
+         * IMPORTANT:
+         * This is now the SAME metadata used by TextEmbeddingMatcher.
+         *
+         * It guarantees that fuzzy aliases and embedding aliases resolve
+         * to the same canonical product_id.
+         */
+        private const val PRODUCT_METADATA_ASSET =
+            "text_matcher/product_embeddings_metadata.json"
     }
 
     data class Product(
-        val name: String
+        val id: String,
+        val name: String,
+        val brand: String = "",
+        val category: String = ""
     )
 
     data class MatchResult(
         val product: Product,
-        val score: Double
+        val score: Double,
+        val matchedAlias: String
     )
 
-    private val products:
-            List<Product>
+    private data class AliasEntry(
+        val product: Product,
+        val alias: String,
+        val variantType: String
+    )
+
+    private val productsById =
+        LinkedHashMap<String, Product>()
+
+    private val productIdByCanonicalName =
+        HashMap<String, String>()
+
+    private val aliases =
+        ArrayList<AliasEntry>()
 
     init {
+        loadCanonicalProducts(context)
+    }
 
-        products =
+    private fun loadCanonicalProducts(
+        context: Context
+    ) {
+        val jsonText =
             context.assets
-                .open(PRODUCTS_ASSET)
+                .open(PRODUCT_METADATA_ASSET)
                 .bufferedReader()
-                .useLines { lines ->
-
-                    lines
-                        .map {
-                            it.trim()
-                        }
-                        .filter {
-                            it.isNotBlank()
-                        }
-                        .distinct()
-                        .map {
-                            Product(it)
-                        }
-                        .toList()
+                .use {
+                    it.readText()
                 }
+
+        val root =
+            JSONObject(jsonText)
+
+        val entries =
+            root.getJSONArray("entries")
+
+        /*
+         * Prevent duplicate aliases for the same canonical product.
+         */
+        val seenAliases =
+            HashSet<String>()
+
+        for (index in 0 until entries.length()) {
+
+            val item =
+                entries.getJSONObject(index)
+
+            val productId =
+                item.optString("product_id")
+                    .trim()
+
+            val productName =
+                item.optString("product_name")
+                    .trim()
+
+            val brand =
+                item.optString("brand")
+                    .trim()
+
+            val category =
+                item.optString("category")
+                    .trim()
+
+            val alias =
+                item.optString("text")
+                    .trim()
+
+            val variantType =
+                item.optString("variant_type")
+                    .trim()
+
+            if (
+                productId.isBlank() ||
+                productName.isBlank()
+            ) {
+                continue
+            }
+
+            val product =
+                productsById.getOrPut(productId) {
+                    Product(
+                        id = productId,
+                        name = productName,
+                        brand = brand,
+                        category = category
+                    )
+                }
+
+            productIdByCanonicalName[
+                canonicalNameKey(productName)
+            ] = productId
+
+            /*
+             * search_text is intentionally NOT used as a fuzzy alias.
+             * It is useful for embeddings, but it contains many words and
+             * would make fuzzy matching overly permissive.
+             */
+            if (
+                alias.isBlank() ||
+                variantType.equals(
+                    "search_text",
+                    ignoreCase = true
+                )
+            ) {
+                continue
+            }
+
+            val dedupeKey =
+                productId + "|" + normalize(alias)
+
+            if (seenAliases.add(dedupeKey)) {
+                aliases.add(
+                    AliasEntry(
+                        product = product,
+                        alias = alias,
+                        variantType = variantType
+                    )
+                )
+            }
+        }
 
         Log.i(
             TAG,
-            "Loaded ${products.size} fuzzy product aliases"
+            "Loaded ${productsById.size} canonical products " +
+                    "with ${aliases.size} fuzzy aliases from shared embedding metadata"
         )
     }
 
-    // =====================================================
-    // PUBLIC API
-    // =====================================================
+    /*
+     * Used by HybridProductResolver to map the canonical name returned by
+     * TextEmbeddingMatcher back to the exact product_id.
+     */
+    fun productIdForCanonicalName(
+        canonicalName: String
+    ): String? =
+        productIdByCanonicalName[
+            canonicalNameKey(canonicalName)
+        ]
 
     fun findBestMatch(
         ocrText: String,
@@ -68,83 +183,73 @@ class ProductMatcher(
 
         val best =
             findTopMatches(
-                ocrText =
-                    ocrText,
-                topK =
-                    1
+                ocrText = ocrText,
+                topK = 1
             ).firstOrNull()
                 ?: return null
 
-        return if (
-            best.score >=
-            threshold
-        ) {
-
+        return if (best.score >= threshold) {
             best
-
         } else {
-
             null
         }
     }
 
+    /*
+     * Match OCR against ALL aliases, but return only ONE result for each
+     * canonical product_id.  The best alias score becomes that product's
+     * fuzzy score.
+     */
     fun findTopMatches(
         ocrText: String,
         topK: Int = 5
     ): List<MatchResult> {
 
         val normalizedOcr =
-            normalize(
-                ocrText
-            )
+            normalize(ocrText)
 
-        if (
-            normalizedOcr.isBlank()
-        ) {
-
+        if (normalizedOcr.isBlank()) {
             return emptyList()
         }
 
         val compactOcr =
-            compact(
-                normalizedOcr
-            )
+            compact(normalizedOcr)
 
-        val results =
-            ArrayList<MatchResult>(
-                products.size
-            )
+        val bestByProductId =
+            LinkedHashMap<String, MatchResult>()
 
-        for (
-        product in
-        products
-        ) {
+        for (entry in aliases) {
 
             val score =
                 calculateProductScore(
-                    normalizedOcr =
-                        normalizedOcr,
-
-                    compactOcr =
-                        compactOcr,
-
-                    productName =
-                        product.name
+                    normalizedOcr = normalizedOcr,
+                    compactOcr = compactOcr,
+                    productName = entry.alias
                 )
 
-            results.add(
-                MatchResult(
-                    product =
-                        product,
+            val existing =
+                bestByProductId[
+                    entry.product.id
+                ]
 
-                    score =
-                        score
-                )
-            )
+            if (
+                existing == null ||
+                score > existing.score
+            ) {
+                bestByProductId[
+                    entry.product.id
+                ] =
+                    MatchResult(
+                        product = entry.product,
+                        score = score,
+                        matchedAlias = entry.alias
+                    )
+            }
         }
 
         val top =
-            results
+            bestByProductId
+                .values
                 .sortedByDescending {
                     it.score
                 }
@@ -159,7 +264,7 @@ class ProductMatcher(
                 appendLine("OCR:")
                 appendLine(ocrText)
                 appendLine()
-                appendLine("TOP FUZZY CANDIDATES:")
+                appendLine("TOP CANONICAL FUZZY CANDIDATES:")
 
                 top.forEachIndexed {
                         index,
@@ -175,6 +280,11 @@ class ProductMatcher(
                                 ) +
                                 "%"
                     )
+
+                    appendLine(
+                        "   productId=${candidate.product.id} " +
+                                "matchedAlias='${candidate.matchedAlias}'"
+                    )
                 }
 
                 append("==============================")
@@ -184,9 +294,14 @@ class ProductMatcher(
         return top
     }
 
-    // =====================================================
-    // SCORE
-    // =====================================================
+    private fun canonicalNameKey(
+        value: String
+    ): String =
+        normalize(value)
+            .replace(
+                Regex("[^a-z0-9]"),
+                ""
+            )
 
     private fun calculateProductScore(
         normalizedOcr: String,

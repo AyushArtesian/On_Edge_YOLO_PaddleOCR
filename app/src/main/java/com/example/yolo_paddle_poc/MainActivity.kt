@@ -543,21 +543,26 @@ class MainActivity : AppCompatActivity() {
         detectedItems: List<DetectedItem>
     ) {
 
+        val recognized =
+            detectedItems.filter {
+                !it.matchedProductName.isNullOrBlank()
+            }
+
         val grouped =
-            detectedItems
-                .filter {
-                    !it.matchedProductName.isNullOrBlank()
-                }
-                .groupBy {
-                    hybridResolver.canonicalKey(
-                        it.matchedProductName!!
-                    )
-                }
+            recognized.groupBy {
+                hybridResolver.canonicalKey(
+                    it.matchedProductName!!
+                )
+            }
 
         val unknown =
-            detectedItems.filter {
-                it.matchedProductName.isNullOrBlank()
-            }
+            detectedItems
+                .filter {
+                    it.matchedProductName.isNullOrBlank()
+                }
+                .sortedBy {
+                    it.objectIndex
+                }
 
         resultsText.text =
             buildString {
@@ -567,72 +572,116 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 appendLine(
-                    "Unique Products: ${grouped.size}"
+                    "Recognized Objects: ${recognized.size}"
+                )
+
+                appendLine(
+                    "Unknown Objects: ${unknown.size}"
+                )
+
+                appendLine(
+                    "Unique Recognized Products: ${grouped.size}"
                 )
 
                 appendLine()
 
-                grouped.values
-                    .forEachIndexed { index, items ->
+                if (grouped.isNotEmpty()) {
 
-                        val best =
-                            items.maxByOrNull {
-                                it.productMatchScore
-                            } ?: return@forEachIndexed
+                    appendLine("RECOGNIZED PRODUCTS")
+                    appendLine("-------------------")
 
-                        val objectNumbers =
-                            items.sortedBy {
-                                it.objectIndex
-                            }
-                                .joinToString(", ") {
-                                    "#${it.objectIndex}"
-                                }
+                    grouped.values
+                        .forEachIndexed { index, items ->
 
-                        appendLine(
-                            "${index + 1}. ${best.matchedProductName}"
-                        )
+                            val best =
+                                items.maxByOrNull {
+                                    it.productMatchScore
+                                } ?: return@forEachIndexed
 
-                        appendLine(
-                            "Quantity: ${items.size}"
-                        )
-
-                        appendLine(
-                            "Objects: $objectNumbers"
-                        )
-
-                        appendLine(
-                            "Best Match: " +
-                                    String.format(
-                                        Locale.US,
-                                        "%.1f",
-                                        best.productMatchScore
-                                    ) +
-                                    "%"
-                        )
-
-                        appendLine(
-                            "Method: ${best.matchMethod}"
-                        )
-
-                        appendLine()
-                    }
-
-                if (unknown.isNotEmpty()) {
-
-                    appendLine(
-                        "Unknown Objects: ${unknown.size}"
-                    )
-
-                    appendLine(
-                        "Objects: " +
-                                unknown
+                            val objectNumbers =
+                                items
                                     .sortedBy {
                                         it.objectIndex
                                     }
                                     .joinToString(", ") {
                                         "#${it.objectIndex}"
                                     }
-                    )
+
+                            appendLine(
+                                "${index + 1}. ${best.matchedProductName}"
+                            )
+
+                            appendLine(
+                                "Quantity: ${items.size}"
+                            )
+
+                            appendLine(
+                                "Objects: $objectNumbers"
+                            )
+
+                            appendLine(
+                                "Best Match: " +
+                                        String.format(
+                                            Locale.US,
+                                            "%.1f",
+                                            best.productMatchScore
+                                        ) +
+                                        "%"
+                            )
+
+                            appendLine(
+                                "Method: ${best.matchMethod}"
+                            )
+
+                            appendLine()
+                        }
+                }
+
+                if (unknown.isNotEmpty()) {
+
+                    appendLine("UNKNOWN PRODUCTS")
+                    appendLine("----------------")
+
+                    unknown.forEach { item ->
+
+                        appendLine(
+                            "Object #${item.objectIndex}: Unknown Product"
+                        )
+
+                        appendLine(
+                            "YOLO Confidence: " +
+                                    String.format(
+                                        Locale.US,
+                                        "%.1f",
+                                        item.yoloConfidence * 100.0
+                                    ) +
+                                    "%"
+                        )
+
+                        appendLine(
+                            "OCR Text: " +
+                                    item.rawOcrText
+                                        .ifBlank {
+                                            "<no useful OCR text>"
+                                        }
+                        )
+
+                        appendLine(
+                            "Best Matcher Score: " +
+                                    String.format(
+                                        Locale.US,
+                                        "%.1f",
+                                        item.productMatchScore
+                                    ) +
+                                    "%"
+                        )
+
+                        appendLine(
+                            "Method: ${item.matchMethod}"
+                        )
+
+                        appendLine()
+                    }
                 }
             }
     }
@@ -641,20 +690,33 @@ class MainActivity : AppCompatActivity() {
         detectedItems: List<DetectedItem>
     ) {
 
+        val recognized =
+            detectedItems.filter {
+                !it.matchedProductName.isNullOrBlank()
+            }
+
         val grouped =
+            recognized.groupBy {
+                hybridResolver.canonicalKey(
+                    it.matchedProductName!!
+                )
+            }
+
+        val unknown =
             detectedItems
                 .filter {
-                    !it.matchedProductName.isNullOrBlank()
+                    it.matchedProductName.isNullOrBlank()
                 }
-                .groupBy {
-                    hybridResolver.canonicalKey(
-                        it.matchedProductName!!
-                    )
+                .sortedBy {
+                    it.objectIndex
                 }
 
         Log.i(
             HYBRID_TAG,
-            "FINAL UNIQUE PRODUCT RESULTS"
+            "FINAL PRODUCT RESULTS: " +
+                    "${detectedItems.size} detected, " +
+                    "${recognized.size} recognized, " +
+                    "${unknown.size} unknown"
         )
 
         grouped.values.forEach { items ->
@@ -678,6 +740,21 @@ class MainActivity : AppCompatActivity() {
                 }
                 Best Score: ${String.format(Locale.US, "%.2f", best.productMatchScore)}%
                 Method: ${best.matchMethod}
+                """.trimIndent()
+            )
+        }
+
+        unknown.forEach { item ->
+
+            Log.i(
+                HYBRID_TAG,
+                """
+                Product: Unknown Product
+                Object: #${item.objectIndex}
+                YOLO Confidence: ${String.format(Locale.US, "%.2f", item.yoloConfidence * 100.0)}%
+                OCR Text: ${item.rawOcrText.ifBlank { "<no useful OCR text>" }}
+                Best Matcher Score: ${String.format(Locale.US, "%.2f", item.productMatchScore)}%
+                Method: ${item.matchMethod}
                 """.trimIndent()
             )
         }

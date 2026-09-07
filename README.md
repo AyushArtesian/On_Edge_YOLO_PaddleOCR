@@ -1,274 +1,227 @@
-# EdgeVision Product Intelligence Platform for Android
+# On-Device YOLO + PaddleOCR Product Intelligence (Android)
+
+An Android multi-module project that performs **end-to-end, on-device product understanding**:
+
+1. **Object detection** using YOLO in native C++ via NCNN.
+2. **OCR detection + recognition** using a Kotlin PaddleOCR SDK backed by ONNX Runtime + OpenCV.
+3. **Product resolution** using a hybrid semantic-embedding + fuzzy-text matcher.
 
 ---
 
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge)
-![UI](https://img.shields.io/badge/UI-Android%20Views-1E88E5?style=for-the-badge)
-![Language](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge)
-![Native](https://img.shields.io/badge/Native-C%2B%2B%20(JNI)-00599C?style=for-the-badge)
-![Detector](https://img.shields.io/badge/Detector-YOLO%20(NCNN)-FF8F00?style=for-the-badge)
-![OCR](https://img.shields.io/badge/OCR-PaddleOCR%20(ONNX)-00A86B?style=for-the-badge)
-![Matcher](https://img.shields.io/badge/Matcher-MiniLM%20%2B%20Fuzzy-8E24AA?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=for-the-badge)
+## 1) What this repository contains
 
-<p align="center">
-  <b>Production-oriented on-device computer vision, OCR, and product intelligence pipeline for Android</b>
-</p>
+This repository is a full Android app + OCR SDK implementation with bundled model assets.
 
-<p align="center">
-  <i>Detect objects with YOLO (NCNN), extract text with PaddleOCR (ONNX Runtime + OpenCV), and map OCR strings to product catalog entities via hybrid semantic + fuzzy matching.</i>
-</p>
+- App module: `:app`
+- OCR SDK module: `:ppocr-sdk`
+- Native detector: `app/src/main/cpp/native-lib.cpp`
+- Embedded model/data assets in both modules
+- Instrumented OCR benchmark suite
+
+All core inference and matching in this codebase run locally on device.
 
 ---
 
-## 1) Project Overview
+## 2) Tech stack
 
-This repository contains a multi-module Android project that performs full on-device visual understanding for product images:
-
-1. **Object Detection** using a native YOLO model executed via **NCNN** (`C++`, `JNI`).
-2. **Text Detection + Recognition** using a local **PaddleOCR** runtime implemented in Kotlin on top of **ONNX Runtime** and **OpenCV**.
-3. **Product Resolution** using a hybrid strategy:
-   - semantic embedding retrieval (`MiniLM` ONNX + precomputed product embeddings),
-   - fuzzy lexical matching (`Levenshtein`, token coverage, containment/partial logic),
-   - score fusion and acceptance thresholds.
-
-All critical inference runs are local to device in this codebase.
+- **Language**: Kotlin (app + SDK), C++ (native detector)
+- **Android build**: AGP `9.3.2`, Gradle `9.5.0`
+- **App SDK levels**: `compileSdk 37`, `targetSdk 37`, `minSdk 26`
+- **OCR SDK**: `compileSdk 35`, `minSdk 26`
+- **Native inference**: NCNN (prebuilt static libs)
+- **OCR inference**: ONNX Runtime Android `1.21.1`
+- **Image processing**: OpenCV Android `4.5.3.0`
+- **Concurrency**: Kotlin coroutines
 
 ---
 
-## 2) Repository Structure
+## 3) Repository structure
 
 ```text
 .
-├─ app/
-│  ├─ build.gradle.kts
-│  └─ src/
-│     ├─ main/
-│     │  ├─ AndroidManifest.xml
-│     │  ├─ assets/
-│     │  │  ├─ yolo/
-│     │  │  │  ├─ model.ncnn.param
-│     │  │  │  └─ model.ncnn.bin
-│     │  │  ├─ text_matcher/
-│     │  │  │  ├─ model_qint8_arm64.onnx
-│     │  │  │  ├─ vocab.txt
-│     │  │  │  ├─ tokenizer.json
-│     │  │  │  ├─ tokenizer_config.json
-│     │  │  │  ├─ special_tokens_map.json
-│     │  │  │  ├─ config.json
-│     │  │  │  ├─ product_names.json
-│     │  │  │  ├─ product_embeddings.bin
-│     │  │  │  └─ product_embeddings_metadata.json
-│     │  │  └─ products.txt
-│     │  ├─ cpp/
-│     │  │  ├─ CMakeLists.txt
-│     │  │  ├─ native-lib.cpp
-│     │  │  └─ ncnn/ (prebuilt headers/libs for arm64-v8a and x86_64)
-│     │  ├─ java/com/example/yolo_paddle_poc/
-│     │  │  ├─ MainActivity.kt
-│     │  │  ├─ ProductMatcher.kt
-│     │  │  └─ TextEmbeddingMatcher.kt
-│     │  ├─ keepRules/rules.keep
-│     │  └─ res/
-│     │     ├─ layout/activity_main.xml
-│     │     ├─ values/*.xml
-│     │     └─ xml/*.xml
-│     ├─ androidTest/java/.../ExampleInstrumentedTest.kt
-│     └─ test/java/.../ExampleUnitTest.kt
+├─ app/                          # Android application module
+│  ├─ src/main/java/com/example/yolo_paddle_poc/
+│  │  ├─ MainActivity.kt
+│  │  ├─ ProductMatcher.kt
+│  │  ├─ TextEmbeddingMatcher.kt
+│  │  ├─ matching/HybridProductResolver.kt
+│  │  ├─ model/Models.kt
+│  │  ├─ ocr/OcrMapper.kt
+│  │  ├─ ocr/ProminentTextSelector.kt
+│  │  ├─ pipeline/ProductDetectionPipeline.kt
+│  │  └─ util/{BitmapUtils,DrawingUtils}.kt
+│  ├─ src/main/cpp/
+│  │  ├─ CMakeLists.txt
+│  │  ├─ native-lib.cpp
+│  │  └─ ncnn/                   # prebuilt include/lib trees for arm64-v8a, x86_64
+│  ├─ src/main/assets/
+│  │  ├─ yolo/model.ncnn.{param,bin}
+│  │  ├─ text_matcher/*          # MiniLM model, vocab, tokenizer files, embeddings
+│  │  └─ products.txt            # legacy alias file (currently not used in matcher logic)
+│  ├─ src/main/res/layout/activity_main.xml
+│  ├─ src/main/AndroidManifest.xml
+│  └─ src/{test,androidTest}/...
 │
-├─ ppocr-sdk/
-│  ├─ build.gradle.kts
-│  └─ src/
-│     ├─ main/
-│     │  ├─ AndroidManifest.xml
-│     │  ├─ assets/models/
-│     │  │  ├─ det/inference.onnx
-│     │  │  ├─ det/inference.yml
-│     │  │  ├─ rec/inference.onnx
-│     │  │  └─ rec/inference.yml
-│     │  └─ java/com/paddle/ocr/
-│     │     ├─ PaddleOCR.kt
-│     │     ├─ PaddleOCRConfig.kt
-│     │     ├─ EngineConfig.kt
-│     │     ├─ engine/
-│     │     │  ├─ OCREngine.kt
-│     │     │  ├─ DetectionEngine.kt
-│     │     │  ├─ RecognitionEngine.kt
-│     │     │  ├─ ORTSessionManager.kt
-│     │     │  └─ OCREngineResult.kt
-│     │     ├─ preprocess/
-│     │     │  ├─ DetPreprocessor.kt
-│     │     │  └─ RecPreprocessor.kt
-│     │     ├─ postprocess/
-│     │     │  ├─ DBPostProcessor.kt
-│     │     │  ├─ CTCDecoder.kt
-│     │     │  ├─ BoxSorter.kt
-│     │     │  ├─ PolygonUnclip.kt
-│     │     │  ├─ QuadGeometry.kt
-│     │     │  └─ QuadTextCrop.kt
-│     │     ├─ model/
-│     │     │  ├─ OCRBox.kt
-│     │     │  ├─ OCRResult.kt
-│     │     │  ├─ OCRRunResult.kt
-│     │     │  ├─ OCRError.kt
-│     │     │  └─ ModelConfig.kt
-│     │     └─ util/
-│     │        ├─ OpenCVUtils.kt
-│     │        ├─ BitmapUtils.kt
-│     │        ├─ ImageUtils.kt
-│     │        ├─ MathUtils.kt
-│     │        └─ YamlUtils.kt
-│     └─ androidTest/
-│        ├─ java/com/paddle/ocr/benchmark/
-│        │  ├─ OCRBenchmarkTest.kt
-│        │  └─ BenchmarkFixtures.kt
-│        └─ res/raw/android_ocr_benchmark_reference.png
+├─ ppocr-sdk/                    # OCR library module
+│  ├─ src/main/java/com/paddle/ocr/
+│  │  ├─ PaddleOCR.kt
+│  │  ├─ PaddleOCRConfig.kt
+│  │  ├─ EngineConfig.kt
+│  │  ├─ engine/*
+│  │  ├─ preprocess/*
+│  │  ├─ postprocess/*
+│  │  ├─ model/*
+│  │  └─ util/*
+│  ├─ src/main/assets/models/{det,rec}/*
+│  └─ src/androidTest/java/com/paddle/ocr/benchmark/*
 │
-├─ build.gradle.kts
+├─ gradle/libs.versions.toml
 ├─ settings.gradle.kts
-├─ gradle/
-│  ├─ libs.versions.toml
-│  └─ wrapper/gradle-wrapper.properties
-├─ gradle.properties
-└─ .gitignore
+├─ build.gradle.kts
+├─ product_embeddings.bin                     # root-level legacy artifact
+└─ product_embeddings_metadata.json           # root-level legacy metadata summary
 ```
 
 ---
 
-## 3) Build System and Versions
+## 4) App module (`:app`) in detail
 
-### Project Modules
+### 4.1 MainActivity responsibilities
 
-- `:app` (Android application)
-- `:ppocr-sdk` (Android library module)
+`MainActivity.kt` coordinates the full workflow:
 
-### Root Gradle
+- Loads native `yolo_native` library
+- Declares JNI methods:
+  - `loadYoloModel(assetManager)`
+  - `detectObjects(bitmap)`
+- Initializes:
+  - `ProductMatcher`
+  - `TextEmbeddingMatcher`
+  - `PaddleOCR`
+  - `HybridProductResolver`
+  - `ProductDetectionPipeline`
+- Handles two image inputs:
+  - gallery (`GetContent`)
+  - camera (`TakePicture` + `FileProvider` cache URI)
+- Runs pipeline and renders:
+  - boxed image overlay
+  - grouped recognized/unknown product output
+  - timing/status summary
 
-- Android Gradle Plugin version: **9.3.2**
-- Gradle wrapper: **9.5.0**
-- Repository resolution mode: `FAIL_ON_PROJECT_REPOS`
+### 4.2 Product pipeline orchestration
 
-### SDK / Java Configuration
+`pipeline/ProductDetectionPipeline.kt` performs two OCR passes per object candidate:
 
-| Module | compileSdk | minSdk | targetSdk | Java |
-|---|---:|---:|---:|---|
-| `app` | 37 | 26 | 37 | 11 |
-| `ppocr-sdk` | 35 | 26 | n/a (library) | 17 |
+1. **Full-image OCR pass**
+   - OCR once on full image
+   - map OCR lines to object boxes
+   - prominent-text selection
+   - hybrid product resolution
+2. **Crop fallback pass** (if full-image match fails)
+   - crop object region with padding
+   - upscale crop
+   - OCR on crop
+   - prominent-text selection
+   - hybrid product resolution
 
-### ABI Filters (`app`)
+Result is a list of `DetectedItem` objects with box coordinates, OCR text, match score, method, and timings.
 
-- `arm64-v8a`
-- `x86_64`
+### 4.3 Matching subsystem
 
-### App dependencies (not exhaustive of transitive)
+- `TextEmbeddingMatcher.kt`
+  - Loads MiniLM ONNX model + vocab + embedding metadata + binary vectors
+  - Implements lightweight BERT-style tokenization (basic + WordPiece)
+  - Generates normalized query embedding
+  - Computes dot-product similarity against stored embeddings
+  - Collapses multiple variants to best score per canonical product ID
 
-- `androidx.activity:activity-ktx`
-- `androidx.appcompat:appcompat`
-- `androidx.constraintlayout:constraintlayout`
-- `androidx.core:core-ktx`
-- `com.google.android.material:material`
-- `com.microsoft.onnxruntime:onnxruntime-android:1.21.1`
-- module dependency: `implementation(project(":ppocr-sdk"))`
+- `ProductMatcher.kt`
+  - Loads canonical products and aliases from `text_matcher/product_embeddings_metadata.json`
+  - Excludes `search_text` variants from fuzzy alias scoring
+  - Scores aliases with exact/compact exact, containment, token coverage, Levenshtein, partial similarity, bonuses/penalties
+  - Returns best canonical fuzzy matches
 
-### OCR module dependencies
+- `matching/HybridProductResolver.kt`
+  - Merges top embedding and fuzzy candidates by canonical product ID
+  - Weighted fusion:
+    - embedding: `0.55`
+    - fuzzy: `0.45`
+    - agreement bonus: `+0.10`
+  - Decision thresholds:
+    - strong: `0.75`
+    - agreement: `0.50`
+    - fuzzy override: `0.88`
 
-- `com.microsoft.onnxruntime:onnxruntime-android:1.21.1`
-- `com.quickbirdstudios:opencv:4.5.3.0`
-- `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0`
-- `androidx.core:core-ktx:1.15.0`
+### 4.4 OCR mapping and text selection
+
+- `ocr/OcrMapper.kt`
+  - Parses flattened YOLO output into `ObjectBox` list
+  - Converts OCR quadrilateral to axis-aligned rect
+  - Assigns OCR line to best object using center-inside and overlap ratio
+
+- `ocr/ProminentTextSelector.kt`
+  - Scores OCR lines using relative height/area, uppercase/title cues, confidence
+  - Drops packaging noise (MRP, net weight, batch/expiry, etc.)
+  - Selects up to 4 high-value lines in reading order
+
+### 4.5 UI and utilities
+
+- `res/layout/activity_main.xml`
+  - status text
+  - select/capture buttons
+  - result image preview
+  - scrollable detected-items output
+- `util/BitmapUtils.kt`
+  - EXIF-correct decode
+  - resize for inference
+  - crop with padding
+  - upscale for OCR fallback
+- `util/DrawingUtils.kt`
+  - draws red detection boxes and numeric object labels
+- `res/xml/file_paths.xml`
+  - scoped cache path for camera file sharing via `FileProvider`
 
 ---
 
-## 4) End-to-End Runtime Flow
+## 5) Native YOLO detector (`app/src/main/cpp/native-lib.cpp`)
 
-`MainActivity.kt` drives the full user-facing pipeline.
+### Exposed JNI API
 
-### Model boot sequence
+- `Java_com_example_yolo_1paddle_1poc_MainActivity_loadYoloModel`
+- `Java_com_example_yolo_1paddle_1poc_MainActivity_detectObjects`
 
-At startup, app initializes:
+### Runtime behavior
 
-1. **TextEmbeddingMatcher**
-   - loads vocabulary, tokenizer metadata, product names, embeddings, ONNX session.
-2. **YOLO model**
-   - native JNI call `loadYoloModel(assets)`.
-3. **PaddleOCR**
-   - initializes OpenCV,
-   - creates OCR engine with detection + recognition model assets.
+- Loads NCNN model assets from `assets/yolo/`
+- Uses letterbox resize to `640x640`
+- Converts RGBA bitmap safely with stride-aware copy
+- Normalizes to `[0,1]`
+- Runs extractor on blobs:
+  - input: `in0`
+  - output: `out0`
+- Decodes output for `NUM_CLASSES = 17`
+- Applies class-agnostic NMS (`NMS_THRESHOLD = 0.45`, `CONF_THRESHOLD = 0.25`)
+- Returns flattened array as `[x1, y1, x2, y2, confidence] * N`
 
-Select button is enabled only when all three states are ready:
+### Native build
 
-- `yoloReady`
-- `ocrReady`
-- `embeddingReady`
-
-### Inference sequence per selected image
-
-1. Decode input to `Bitmap`.
-2. Convert to `ARGB_8888`.
-3. Resize (max side `1280`) for inference.
-4. Run YOLO once on full image (`detectObjects` JNI).
-5. Run PaddleOCR once on full image (`ocr.recognize(bitmap)`).
-6. Convert OCR quads to axis-aligned rectangles.
-7. Assign OCR boxes to object boxes (center-inside or overlap threshold).
-8. Merge OCR lines per object in reading order.
-9. Resolve product by hybrid matcher.
-10. Draw detection boxes and display structured text output.
-
----
-
-## 5) Native YOLO (NCNN) Implementation Details
-
-File: `app/src/main/cpp/native-lib.cpp`
-
-### Exposed JNI methods
-
-- `loadYoloModel(AssetManager): Boolean`
-- `detectObjects(Bitmap): FloatArray`
-
-### Core settings
-
-- `INPUT_SIZE = 640`
-- `NUM_CLASSES = 17`
-- `CONF_THRESHOLD = 0.25f`
-- `NMS_THRESHOLD = 0.45f`
-- `g_yolo.opt.use_vulkan_compute = false`
-- `g_yolo.opt.num_threads = 2`
-
-### Processing steps
-
-1. Validate model loaded.
-2. Validate bitmap format `RGBA_8888`.
-3. Copy bitmap with stride-safe memory handling.
-4. Resize to letterboxed input preserving aspect ratio.
-5. Manual normalization (`0..255 -> 0..1`).
-6. Execute NCNN extractor:
-   - input blob `"in0"`
-   - output blob `"out0"`
-7. Decode YOLO output:
-   - supports orientation of `[features, predictions]` or `[predictions, features]`
-   - feature count = `4 + NUM_CLASSES`.
-8. Select best class score per prediction.
-9. Convert `xywh` to `xyxy`, undo letterbox, map to original image coordinates.
-10. Apply class-agnostic NMS.
-11. Return flattened `FloatArray`:
-    - `[x1, y1, x2, y2, confidence]` per detection.
-
-### Build integration
-
-`CMakeLists.txt` resolves per-ABI NCNN package from:
-
-`app/src/main/cpp/ncnn/${ANDROID_ABI}/lib/cmake/ncnn`
-
-Linked libs:
+`CMakeLists.txt` links:
 
 - `ncnn`
 - `log`
 - `android`
 - `jnigraphics`
 
+and resolves package path by ABI:
+
+- `app/src/main/cpp/ncnn/arm64-v8a/...`
+- `app/src/main/cpp/ncnn/x86_64/...`
+
+> The additional `arm64-v8a-openmp-backup` tree is present as a backup variant.
+
 ---
 
-## 6) OCR SDK (`ppocr-sdk`) Architecture
+## 6) OCR SDK module (`:ppocr-sdk`) architecture
 
 ### Public API
 
@@ -281,261 +234,122 @@ Linked libs:
 - `recognize(imageBytes)`
 - `release()`
 
-Returns `OCRRunResult` with both prediction data and detailed timing metrics.
+### Config types
 
-### Engine graph
+- `PaddleOCRConfig`
+  - detection pre/post-process parameters and `recBatchSize`
+- `EngineConfig`
+  - ONNX Runtime thread count (`numThreads`)
 
-`OCREngine` composes:
+### Engine pipeline
 
-1. `ORTSessionManager` (loads ONNX models, owns ORT sessions)
-2. `DetectionEngine`
-3. `RecognitionEngine`
+- `engine/ORTSessionManager.kt`
+  - loads ONNX sessions
+  - runs det/rec inference
+  - tracks cold load time
+- `engine/DetectionEngine.kt`
+  - det preprocess -> ONNX det inference -> DB postprocess
+- `engine/RecognitionEngine.kt`
+  - rec preprocess batch -> ONNX rec inference -> CTC decode
+- `engine/OCREngine.kt`
+  - orchestrates full run and detailed timing aggregation
 
-### Detection pipeline
+### Preprocess and postprocess packages
 
-`DetPreprocessor`:
+- `preprocess/DetPreprocessor.kt`
+  - resize to multiple-of-32, normalize, NCHW tensor build
+- `preprocess/RecPreprocessor.kt`
+  - BGR->RGB, fixed height=48, width padding, batch tensor build
+- `postprocess/DBPostProcessor.kt`
+  - contour extraction, score filtering, polygon unclip, quad scaling
+- `postprocess/QuadTextCrop.kt`
+  - perspective crop and vertical auto-rotation
+- `postprocess/CTCDecoder.kt`
+  - CTC greedy decode with blank/repeat collapse
+- `postprocess/BoxSorter.kt`
+  - reading-order sorting with row-threshold refinement
+- `postprocess/PolygonUnclip.kt`, `QuadGeometry.kt`
+  - geometric helpers
 
-- optional BGR->RGB conversion depending on config,
-- resize to multiple of 32 with side-length constraints,
-- normalize by ImageNet-like mean/std,
-- output NCHW tensor.
+### Models and error contracts
 
-`DetectionEngine`:
+- `model/OCRBox.kt`, `OCRResult.kt`, `OCRRunResult.kt`
+- `model/ModelConfig.kt`
+  - parses recognition YAML `character_dict`
+- `model/OCRError.kt`
+  - typed failures: model not found/load failed, config parse, invalid image, inference failure, decode error
 
-- ORT detection inference,
-- DB postprocess via `DBPostProcessor`,
-- outputs quadrilateral `OCRBox` list.
+### Utility package
 
-### Recognition pipeline
-
-`QuadTextCrop`:
-
-- perspective crop from each detection quad,
-- auto-rotate highly vertical crops.
-
-`RecPreprocessor`:
-
-- resize each crop to fixed height (`48`) while preserving width ratio,
-- normalize with `x/127.5 - 1`,
-- pad to batch max width,
-- assemble NCHW batch.
-
-`RecognitionEngine`:
-
-- ORT recognition inference,
-- CTC decode (`CTCDecoder`),
-- per-line confidence.
-
-### Ordering and filtering
-
-- Boxes sorted by reading order (`BoxSorter`).
-- Final OCR lines filtered by `recScoreThresh`.
-
-### Error model
-
-Typed OCR exceptions in `OCRError`:
-
-- `ModelNotFound`
-- `ModelLoadFailed`
-- `ConfigParseFailed`
-- `InvalidImage`
-- `InferenceFailed`
-- `DecodeError`
+- `util/OpenCVUtils.kt`: OpenCV native init
+- `util/BitmapUtils.kt`: Bitmap/Mat conversion + decode
+- `util/ImageUtils.kt`: detector resize policy
+- `util/MathUtils.kt`: half-even rounding
+- `util/YamlUtils.kt`: YAML indentation helper
 
 ---
 
-## 7) Product Matching System
+## 7) Assets and data inventory
 
-Two independent matchers run and are fused.
+### App-side matcher assets (`app/src/main/assets/text_matcher`)
 
-### A) Semantic matcher (`TextEmbeddingMatcher.kt`)
+- `model_qint8_arm64.onnx`
+- `vocab.txt`
+- `tokenizer.json`, `tokenizer_config.json`, `special_tokens_map.json`, `config.json`
+- `product_embeddings.bin`
+- `product_embeddings_metadata.json`
+- `product_names.json` (legacy list file)
 
-Uses:
+Current metadata (`product_embeddings_metadata.json`):
 
-- ONNX MiniLM model (`model_qint8_arm64.onnx`)
-- custom tokenizer implementation:
-  - basic tokenization (lowercase/accent strip/punctuation split),
-  - WordPiece tokenization against vocab.
+- `embedding_dimension`: `384`
+- `normalized`: `true`
+- embedding entries: `406`
+- canonical products: `82`
+- variant breakdown:
+  - `name`: 82
+  - `brand`: 82
+  - `alias`: 160
+  - `search_text`: 82
 
-Pipeline:
+`products.txt` currently has `353` non-empty lines but is not used by the current `ProductMatcher` load path.
 
-1. Tokenize query text.
-2. Run ONNX transformer session.
-3. Mean-pool token embeddings using attention mask.
-4. L2-normalize vector.
-5. Dot-product against precomputed product embeddings.
-6. Return top-k by score.
+### OCR model assets (`ppocr-sdk/src/main/assets/models`)
 
-### B) Fuzzy matcher (`ProductMatcher.kt`)
+- Detection: `det/inference.onnx`, `det/inference.yml`
+- Recognition: `rec/inference.onnx`, `rec/inference.yml`
 
-Reads aliases from `products.txt`, then computes score from:
+### YOLO assets (`app/src/main/assets/yolo`)
 
-- exact/compact exact matches,
-- containment signals,
-- Levenshtein-based similarity,
-- token coverage weighted by token length,
-- partial sliding-window similarity,
-- multi-token agreement bonus,
-- penalty for generic one-word candidates when OCR has multiple words.
-
-Final fuzzy score range: `0..100`.
-
-### C) Hybrid fusion (`MainActivity.resolveProductHybrid`)
-
-Constants:
-
-- `TOP_K = 5`
-- `EMBEDDING_WEIGHT = 0.55`
-- `FUZZY_WEIGHT = 0.45`
-- `AGREEMENT_BONUS = 0.10`
-- `FINAL_STRONG_THRESHOLD = 0.75`
-- `FINAL_AGREEMENT_THRESHOLD = 0.50`
-- `FUZZY_STRONG_OVERRIDE = 0.88`
-
-Decision methods used in result output:
-
-- `HYBRID_AGREEMENT`
-- `HYBRID_STRONG`
-- `FUZZY_STRONG`
-- `UNKNOWN`
-- `NO_MAPPED_TEXT` (when object has no mapped OCR lines)
+- `model.ncnn.param`
+- `model.ncnn.bin`
 
 ---
 
-## 8) OCR-to-Object Mapping Logic
+## 8) Build and run
 
-For each OCR text box:
+### Requirements
 
-1. Compute OCR rectangle center.
-2. For each detected object box:
-   - candidate if center lies inside object box, **or**
-   - intersection-over-OCR-area >= `0.50`.
-3. Association score:
-   - center-inside: `1 + overlap`
-   - overlap-only: `overlap`
-4. Attach OCR line to best scoring object.
-
-Then per object:
-
-- OCR lines sorted roughly top-to-bottom then left-to-right.
-- Merged into single string for matching.
-
----
-
-## 9) Assets, Data, and Model Inventory
-
-### App asset inventory
-
-- `products.txt`: **353** non-empty aliases.
-- `text_matcher/product_names.json`: **331** product names.
-- `text_matcher/product_embeddings_metadata.json`:
-  - `count = 331`
-  - `dimension = 384`
-  - `dtype = float32`
-  - `normalized = true`
-  - `model = sentence-transformers/all-MiniLM-L6-v2`
-
-### OCR model assets
-
-- Detection:
-  - `models/det/inference.onnx`
-  - `models/det/inference.yml`
-- Recognition:
-  - `models/rec/inference.onnx`
-  - `models/rec/inference.yml`
-
-`ModelConfig` parses recognition `character_dict` from YAML and ensures trailing space token exists.
-
-### Native detector assets
-
-- `assets/yolo/model.ncnn.param`
-- `assets/yolo/model.ncnn.bin`
-
----
-
-## 10) UI and User Experience
-
-Layout: `app/src/main/res/layout/activity_main.xml`
-
-Main components:
-
-- `statusText`: model/loading/progress state
-- `selectImageButton`: image picker trigger (disabled until ready)
-- `imageView`: renders detected image with bounding boxes
-- `resultsText` in `ScrollView`: per-object output details
-
-Displayed per object:
-
-- object index
-- matched product or unknown
-- match score (if available)
-- match method
-- mapped OCR text + line count
-- YOLO confidence
-- full-image OCR elapsed time
-
----
-
-## 11) Testing and Benchmarking
-
-### App module tests
-
-- `ExampleUnitTest.kt` (placeholder local unit test)
-- `ExampleInstrumentedTest.kt` (package-name check)
-
-### OCR benchmark suite (`ppocr-sdk` androidTest)
-
-`OCRBenchmarkTest.kt` includes:
-
-1. `testOCRExportJSON` (accuracy-style export payload)
-2. `testLatencyBenchmark`
-3. `testMemoryBenchmark`
-
-Benchmark output path:
-
-- `<externalFilesDir>/ocr_benchmark/`
-
-JSON outputs:
-
-- `accuracy_export.json`
-- `latency_benchmark.json`
-- `memory_benchmark.json`
-
-Supported instrumentation args:
-
-- `warmup` (default `3`)
-- `iterations` (default `10`)
-- `rec_batch_size` (default `1`)
-
-Run:
-
-```powershell
-.\gradlew.bat :ppocr-sdk:connectedDebugAndroidTest
-```
-
-With args:
-
-```powershell
-.\gradlew.bat :ppocr-sdk:connectedDebugAndroidTest `
-  -Pandroid.testInstrumentationRunnerArguments.warmup=5 `
-  -Pandroid.testInstrumentationRunnerArguments.iterations=20 `
-  -Pandroid.testInstrumentationRunnerArguments.rec_batch_size=1
-```
-
----
-
-## 12) Build and Run Instructions
+- Android Studio with Android SDK 37 support
+- NDK + CMake installed (for app native build)
+- Java toolchain support for Java 11 (app) and Java 17 (OCR module)
 
 ### Android Studio
 
 1. Open project root.
 2. Sync Gradle.
-3. Ensure SDK/NDK/CMake components are installed.
-4. Run `app` on supported emulator/device.
-5. Wait for model readiness message.
-6. Select image and inspect results.
+3. Build and run `:app`.
+4. Wait for status: models ready.
+5. Select image or capture photo.
 
-### CLI
+### CLI (Linux/macOS)
+
+```bash
+./gradlew assembleDebug
+./gradlew :app:installDebug
+```
+
+### CLI (Windows)
 
 ```powershell
 .\gradlew.bat assembleDebug
@@ -544,121 +358,109 @@ With args:
 
 ---
 
-## 13) Configuration Reference
+## 9) Testing and benchmarking
 
-### `app/build.gradle.kts`
+### App tests
 
-- noCompress includes:
-  - `bin`
-  - `param`
-  - `onnx`
-- external native build through `src/main/cpp/CMakeLists.txt`
+- `app/src/test/.../ExampleUnitTest.kt` (placeholder)
+- `app/src/androidTest/.../ExampleInstrumentedTest.kt` (package assertion)
 
-### `MainActivity` critical constants
+### OCR benchmark tests
 
-- `MAX_IMAGE_SIZE = 1280`
-- `OCR_CONFIDENCE_THRESHOLD = 0.25f`
-- `OCR_TO_OBJECT_OVERLAP_THRESHOLD = 0.50f`
-- hybrid thresholds/weights as listed above
+`ppocr-sdk/src/androidTest/java/com/paddle/ocr/benchmark/OCRBenchmarkTest.kt`
 
-### `PaddleOCRConfig` defaults (SDK)
+Includes:
 
-- `detImgMode = "BGR"`
-- `detLimitSideLen = 64`
-- `detLimitType = "min"`
-- `detMaxSideLimit = 4000`
-- `detThresh = 0.3f`
-- `detBoxThresh = 0.6f`
-- `detUnclipRatio = 1.5f`
-- `detMaxCandidates = 3000`
-- `detUseDilation = false`
-- `detScoreMode = "fast"`
-- `detBoxType = "quad"`
-- `recScoreThresh = 0.0f`
-- `recBatchSize = 1`
+- `testOCRExportJSON`
+- `testLatencyBenchmark`
+- `testMemoryBenchmark`
+
+Run:
+
+```bash
+./gradlew :ppocr-sdk:connectedDebugAndroidTest
+```
+
+Optional instrumentation args:
+
+- `warmup` (default 3)
+- `iterations` (default 10)
+- `rec_batch_size` (default 1)
+
+Example:
+
+```bash
+./gradlew :ppocr-sdk:connectedDebugAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.warmup=5 \
+  -Pandroid.testInstrumentationRunnerArguments.iterations=20 \
+  -Pandroid.testInstrumentationRunnerArguments.rec_batch_size=1
+```
+
+Benchmark JSON outputs are written to:
+
+- `<externalFilesDir>/ocr_benchmark/`
 
 ---
 
-## 14) Logging Tags
+## 10) Important runtime constants (current code)
 
-Useful logcat tags used in app:
+- App image resize max side: `1280` (`MainActivity`)
+- OCR mapping overlap threshold: `0.50` (`ProductDetectionPipeline`)
+- OCR line confidence cutoff: `0.20` (`ProductDetectionPipeline`)
+- Crop padding: `12%`, crop upscale: `3.0x` (`ProductDetectionPipeline`)
+- YOLO input size: `640`, classes: `17` (`native-lib.cpp`)
+- YOLO confidence/NMS: `0.25 / 0.45` (`native-lib.cpp`)
+- OCR engine threads in app init: `2` (`MainActivity`)
+
+---
+
+## 11) Logging tags
 
 - `YOLO_NCNN`
 - `PADDLE_OCR`
-- `PRODUCT_MATCHER`
 - `TEXT_EMBEDDING_MATCHER`
+- `PRODUCT_MATCHER`
 - `HYBRID_PRODUCT_RESOLVER`
 - `OCR_OBJECT_MAPPING`
-
-Useful logcat tag in OCR util:
-
 - `OpenCVUtils`
 
 ---
 
-## 15) Error/Troubleshooting Guide
+## 12) Troubleshooting
 
-### Models not ready / button disabled
-
-Check whether one of these failed:
-
-- YOLO model load (`loadYoloModel`)
-- OpenCV init (`System.loadLibrary("opencv_java4")`)
-- PaddleOCR engine creation
-- MiniLM ONNX session creation
-
-### Native inference returns no detections
-
-- validate input bitmap format is RGBA_8888,
-- verify NCNN assets exist and are loadable,
-- inspect output shape compatibility (`w/h` against features count).
-
-### OCR model load errors
-
-- verify model files under `ppocr-sdk/src/main/assets/models`,
-- check `inference.yml` character dict parse validity.
-
-### Matcher anomalies
-
-- verify consistency of:
-  - `product_names.json`
-  - `product_embeddings.bin`
-  - `product_embeddings_metadata.json` (`count * dimension` float count check).
+- **Buttons remain disabled**
+  - one or more of YOLO/OCR/embedding modules did not initialize
+- **No detections**
+  - verify YOLO assets present and model loaded
+  - verify input bitmap reaches native as `ARGB_8888`
+- **OCR init fails**
+  - ensure OpenCV native load succeeds (`opencv_java4`)
+  - verify ONNX/YAML files in `ppocr-sdk` assets
+- **Matcher quality is poor**
+  - check OCR text quality and product metadata/embedding consistency
 
 ---
 
-## 16) Security and Privacy
+## 13) Security and privacy notes
 
-- Inference and matching are implemented locally on device in this repo.
-- No network service is required for core pipeline execution.
-- Product/model assets are bundled with the app modules.
-
----
-
-## 17) Known Limitations
-
-- YOLO class label IDs are not surfaced in UI output; confidence only is used.
-- Matching accuracy depends heavily on OCR quality and product alias coverage.
-- Current app UI is functional and debug-oriented, not a finalized production UX.
-- Model assets significantly increase APK/app size.
+- Core pipeline is on-device in this codebase.
+- No server dependency is required for model inference or matching.
+- Camera images are stored in app cache and shared via non-exported `FileProvider`.
 
 ---
 
-## 18) License Status
+## 14) Known limitations
 
-A top-level repository `LICENSE` file is currently not present.
-
-Several files in `ppocr-sdk` carry Apache 2.0 headers (Paddle-derived components). Add an explicit repository license and third-party notices before distribution.
+- UI is functional/demo-oriented and not production-polished.
+- Detector class IDs are not surfaced in UI output (confidence + box only).
+- Accuracy is sensitive to OCR quality and metadata coverage.
+- Bundled model assets increase APK size.
 
 ---
 
-## 19) Quick Start Checklist
+## 15) Licensing and attribution
 
-1. Sync Gradle successfully.
-2. Ensure SDK + NDK + CMake availability.
-3. Confirm app launches and all three model states become ready.
-4. Select representative image.
-5. Validate:
-   - boxes drawn,
-   - OCR text mapped,
-   - product match method and score emitted.
+- `ppocr-sdk` source files include Apache-2.0 headers from PaddlePaddle-derived code.
+- Top-level repository does not currently include a `LICENSE` file.
+- Add explicit top-level license + third-party notices before distribution.
+

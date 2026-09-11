@@ -27,7 +27,7 @@
 // =========================================================
 
 static const int INPUT_SIZE = 640;
-static const int NUM_CLASSES = 17;
+static const int NUM_CLASSES = 3;
 
 static const float CONF_THRESHOLD = 0.25f;
 static const float NMS_THRESHOLD = 0.45f;
@@ -744,7 +744,7 @@ Java_com_example_yolo_1paddle_1poc_MainActivity_detectObjects(
     // =====================================================
     // YOLO OUTPUT DECODING
     //
-    // 4 box values + 17 class scores = 21
+    // 4 box values + 3 class scores = 7
     // =====================================================
 
     const int FEATURES =
